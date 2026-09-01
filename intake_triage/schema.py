@@ -93,9 +93,7 @@ class Extraction(BaseModel):
     regulator_or_investigation: Driver[bool] = Field(default_factory=Driver)
     systems_change: Driver[bool] = Field(default_factory=Driver)
     multi_party: Driver[bool] = Field(default_factory=Driver)
-    intake_kind: Driver[IntakeKind] = Field(
-        default_factory=lambda: Driver(value=IntakeKind.ENQUIRY)
-    )
+    intake_kind: Driver[IntakeKind] = Field(default_factory=Driver)
 
 
 class Enquiry(BaseModel):

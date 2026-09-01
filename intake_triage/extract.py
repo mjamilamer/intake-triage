@@ -23,24 +23,25 @@ def _norm(text: str) -> str:
 
 
 def validate_evidence_spans(extraction: Extraction, source: str) -> tuple[Extraction, list[str]]:
-    """Null any evidence span that is not a substring of the source text."""
+    """Drop any value that is not backed by a verbatim span in the source text."""
     haystack = _norm(source)
     rejected: list[str] = []
     payload = extraction.model_dump()
 
-    def check(span: str | None, field: str) -> str | None:
-        if not span:
-            return span
-        if _norm(span) not in haystack:
-            rejected.append(field)
-            return None
-        return span
+    def span_in_source(span: str | None) -> bool:
+        if not span or not str(span).strip():
+            return False
+        return _norm(span) in haystack
 
+    kept_signals = []
     for item in payload["work_signals"]:
-        item["evidence_span"] = check(item.get("evidence_span"), "work_signals")
-        if item["evidence_span"] is None and item.get("value") is not None:
-            # Keep the value; span loss is logged. Do not invent a span.
-            pass
+        if item.get("value") is None:
+            continue
+        if not span_in_source(item.get("evidence_span")):
+            rejected.append("work_signals")
+            continue
+        kept_signals.append(item)
+    payload["work_signals"] = kept_signals
 
     for field in (
         "jurisdiction_names",
@@ -53,12 +54,13 @@ def validate_evidence_spans(extraction: Extraction, source: str) -> tuple[Extrac
         "intake_kind",
     ):
         block = payload[field]
-        new_span = check(block.get("evidence_span"), field)
-        if block.get("evidence_span") and new_span is None:
+        if block.get("value") is None:
+            block["evidence_span"] = None
+            continue
+        if not span_in_source(block.get("evidence_span")):
+            rejected.append(field)
             block["value"] = None
             block["evidence_span"] = None
-        else:
-            block["evidence_span"] = new_span
 
     return Extraction.model_validate(payload), rejected
 
@@ -100,7 +102,5 @@ def extract_with_llm(description: str, *, api_key: str | None = None) -> Extract
     if not tool_blocks:
         raise ValueError("Model did not return a tool call")
     parsed = Extraction.model_validate(tool_blocks[0].input)
-    checked, rejected = validate_evidence_spans(parsed, description)
-    if rejected:
-        checked  # spans already nulled
+    checked, _rejected = validate_evidence_spans(parsed, description)
     return checked

@@ -4,6 +4,7 @@ from intake_triage.generate import seed_to_enquiry, seed_to_extraction
 from intake_triage.pipeline import triage_from_extraction
 from intake_triage.schema import ComplexityTier, Extraction, ServiceLine
 from intake_triage.score import score, tier_for
+from intake_triage.seeds import SEEDS
 from intake_triage.policy_loader import load_policy
 
 

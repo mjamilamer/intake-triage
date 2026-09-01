@@ -76,7 +76,9 @@ Multipliers: hard deadline x1.25; sme 1.0, mid 1.1, enterprise 1.2.
 
 Tiers: Simple hours < 40. Moderate 40 inclusive to < 80. Complex >= 80.
 
-Abstain if: empty/injection/vendor/job (out_of_taxonomy); empty work_signals or 4+ null drivers (low_evidence); two signals with different owners (cross_lead_conflict). Same-lead transaction+tax does not abstain. Route to James, primary MA_TRANSACTION.
+Abstain if: empty/injection/vendor/job (out_of_taxonomy); empty work_signals or any null scoring driver (low_evidence, threshold 1 in policy.yaml); two signals with different owners (cross_lead_conflict). Same-lead transaction+tax does not abstain. Route to James, primary MA_TRANSACTION.
+
+Provisional hours may still be shown on abstention. They omit unknown modifiers. They are not a routing decision.
 
 ## Hard constraints
 

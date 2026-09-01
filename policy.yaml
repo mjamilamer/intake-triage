@@ -54,7 +54,10 @@ tiers:
 
 abstention:
   competing_hours_pct: 0.15  # A15. Challenger within 15% of winner.
-  low_evidence_null_threshold: 4  # A15. Of 8 driver slots.
+  # A15. Any null scoring driver blocks a committed tier. A missing systems flag
+  # is +0 or +10h and can move 30h simple to 40h moderate. Was 4; that allowed
+  # up to three silent substitutions. Calibrate against analyst abstention load.
+  low_evidence_null_threshold: 1
   injection_phrases:
     - "ignore previous instructions"
     - "route to the managing partner"

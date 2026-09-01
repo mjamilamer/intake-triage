@@ -47,7 +47,7 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
     if _driver_null(jurs) or not jurs.value:
         null_drivers.append("jurisdiction_names")
         trace.append("NULL: jurisdictions not determinable from text")
-        extra_jurs = 0
+        extra_jurs = 0  # omitted from committed score; see low_evidence
         jur_span = None
     else:
         extra_jurs = max(len(jurs.value) - 1, 0)
@@ -57,7 +57,7 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
     if _driver_null(entities):
         null_drivers.append("entity_count")
         trace.append("NULL: entity count not determinable from text")
-        extra_entities = 0
+        extra_entities = 0  # omitted from committed score; see low_evidence
     else:
         extra_entities = max(int(entities.value) - 1, 0)
 
@@ -65,7 +65,7 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
     if _driver_null(workstreams):
         null_drivers.append("workstream_count")
         trace.append("NULL: workstreams not determinable from text")
-        extra_ws = 0
+        extra_ws = 0  # omitted from committed score; see low_evidence
     else:
         extra_ws = max(int(workstreams.value) - 1, 0)
 
@@ -73,7 +73,7 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
     if _driver_null(deadline):
         null_drivers.append("deadline_kind")
         trace.append("NULL: deadline kind not determinable from text")
-        deadline_mult = 1.0
+        deadline_mult = 1.0  # omitted unknown; committed score abstains
         hard = False
     else:
         hard = deadline.value == DeadlineKind.HARD
@@ -83,7 +83,7 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
     if _driver_null(regulator):
         null_drivers.append("regulator_or_investigation")
         trace.append("NULL: regulator or investigation pressure not determinable from text")
-        regulator_on = False
+        regulator_on = False  # unknown is not "no regulator"
     else:
         regulator_on = bool(regulator.value)
 
@@ -91,7 +91,7 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
     if _driver_null(systems):
         null_drivers.append("systems_change")
         trace.append("NULL: systems change not determinable from text")
-        systems_on = False
+        systems_on = False  # unknown is not "no systems change"
     else:
         systems_on = bool(systems.value)
 
@@ -99,10 +99,13 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
     if _driver_null(multi):
         null_drivers.append("multi_party")
         trace.append("NULL: multi-party involvement not determinable from text")
-        multi_on = False
+        multi_on = False  # unknown is not "single party"
     else:
         multi_on = bool(multi.value)
 
+    # Unknown modifiers are omitted from the hour arithmetic. That number is
+    # provisional only. A committed tier requires every scoring driver present
+    # (policy abstention.low_evidence_null_threshold, currently 1).
     adds = policy["additives"]
     additive = 0
     additive += extra_jurs * int(adds["extra_jurisdiction_hours"])
@@ -187,6 +190,11 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
         )
         trace.extend(line_trace)
 
+    if null_drivers:
+        trace.append(
+            "PROVISIONAL: unknown drivers omitted from hours; no committed tier until they are present"
+        )
+
     if not line_scores:
         return ScoreResult(
             estimated_hours=None,
@@ -207,10 +215,11 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
         for item in ranked[1:]
         if winner.hours > 0 and abs(item.hours - winner.hours) / winner.hours <= proximity
     ]
+    committed = not low_evidence
     return ScoreResult(
-        estimated_hours=winner.hours,
-        complexity=tier_for(winner.hours, policy),
-        service_line=winner.service_line,
+        estimated_hours=winner.hours if committed else None,
+        complexity=tier_for(winner.hours, policy) if committed else None,
+        service_line=winner.service_line if committed else None,
         rule_trace=trace,
         competing_lines=competing,
         line_scores=ranked,
