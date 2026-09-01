@@ -12,7 +12,7 @@ The model cannot emit `service_line`, `complexity`, `estimated_hours`, or `route
 - Vector store: there is no corpus to retrieve from.
 - Fine-tuning: ~2,600 examples/year against a taxonomy that will change, and it would destroy evidence-span behaviour.
 - Orchestration framework: one deterministic path.
-- Custom UI: a four-lead firm will not maintain one. It becomes an orphan in a quarter.
+- Custom UI as a product: a four-lead firm will not maintain one. The journal at `python -m intake_triage.journal` is an interview walkthrough only.
 
 ## Working scenario
 
@@ -29,12 +29,15 @@ See [EVAL_RESULTS.md](EVAL_RESULTS.md). Score and route match the locked spec at
 ## How to run
 
 ```
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,ui]"
 python -m pytest
 python -m intake_triage.evaluate
+python -m intake_triage.journal
 ```
 
-Optional LLM extraction: `pip install -e ".[llm]"`, set `ANTHROPIC_API_KEY`, call `extract_with_llm`. Model version is pinned in `extract.py`, never a latest alias.
+Open `http://127.0.0.1:8765`. The journal is an interview walkthrough, not the production surface.
+
+Optional live LLM in the journal: `pip install -e ".[llm]"`, set `ANTHROPIC_API_KEY`, then tick "Live LLM". Model version is pinned in `extract.py`, never a latest alias.
 
 ## Repo layout
 

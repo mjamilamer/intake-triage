@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Intake journal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #f3efe4;
+      --ink: #1b1914;
+      --mute: #6a6458;
+      --rule: #d4cec0;
+      --route: #1c4b3a;
+      --abstain: #8b1e1e;
+      --pass: #3d5a45;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--paper); color: var(--ink); }
+    body {
+      font-family: Newsreader, "Iowan Old Style", Georgia, serif;
+      font-size: 18px;
+      line-height: 1.45;
+      min-height: 100vh;
+    }
+    .frame {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+    nav {
+      border-right: 1px solid var(--rule);
+      padding: 28px 20px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    nav p.kicker {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mute);
+      margin: 0 0 28px;
+    }
+    nav ol { list-style: none; padding: 0; margin: 0; }
+    nav li { margin: 0 0 14px; }
+    nav a {
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 15px;
+    }
+    nav a:hover { border-bottom: 1px solid var(--ink); }
+    main { padding: 36px 56px 80px; max-width: 860px; }
+    header.mast {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: baseline;
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 16px;
+      margin-bottom: 28px;
+    }
+    h1 { font-size: 26px; font-weight: 600; margin: 0; letter-spacing: -0.02em; }
+    .note { font-size: 13px; color: var(--mute); max-width: 32ch; text-align: right; }
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin: 0 0 20px;
+      flex-wrap: wrap;
+    }
+    select, button, label.llm {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 12px;
+    }
+    select {
+      flex: 1;
+      min-width: 280px;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--ink);
+      padding: 8px 0;
+      color: var(--ink);
+    }
+    button {
+      background: var(--ink);
+      color: var(--paper);
+      border: 0;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+    button:hover { opacity: 0.85; }
+    label.llm { color: var(--mute); display: flex; gap: 8px; align-items: center; }
+    .decision {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+      margin: 0 0 28px;
+      padding: 16px 0 20px;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--rule);
+    }
+    .decision .status {
+      font-size: 34px;
+      line-height: 1.1;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+    .decision.routed .status { color: var(--route); }
+    .decision.held .status { color: var(--abstain); }
+    .decision dl { margin: 0; text-align: right; font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+    .decision dt { color: var(--mute); }
+    .decision dd { margin: 0 0 8px; }
+    article.entry { margin: 0 0 48px; }
+    article.entry h2 {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mute);
+      margin: 0 0 12px;
+      font-weight: 500;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px 28px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+    .meta span { color: var(--mute); }
+    .prose {
+      font-size: 20px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    pre.json {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      background: #ebe6d8;
+      padding: 16px 18px;
+      overflow: auto;
+      max-height: 360px;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+    .source {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--mute);
+      margin: 0 0 8px;
+    }
+    .gates { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
+    details.gate {
+      border-bottom: 1px solid var(--rule);
+      padding: 10px 0;
+    }
+    details.gate summary {
+      cursor: pointer;
+      list-style: none;
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 12px;
+      font-size: 16px;
+    }
+    details.gate summary::-webkit-details-marker { display: none; }
+    .st { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .st.passed { color: var(--pass); }
+    .st.fired { color: var(--abstain); }
+    .st.not_reached { color: var(--mute); }
+    .how { font-size: 15px; color: var(--mute); margin: 10px 0 0 104px; }
+    .paths { display: grid; gap: 0; }
+    .path {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 16px;
+    }
+    .path b { font-weight: 600; }
+    .err { color: var(--abstain); font-size: 14px; margin: 0 0 12px; }
+    @media (max-width: 820px) {
+      .frame { grid-template-columns: 1fr; }
+      nav { height: auto; position: relative; border-right: 0; border-bottom: 1px solid var(--rule); }
+      main { padding: 24px 20px 60px; }
+      .decision { grid-template-columns: 1fr; }
+      .decision dl { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <nav>
+      <p class="kicker">Triage journal</p>
+      <ol>
+        <li><a href="#intake">01  Intake</a></li>
+        <li><a href="#extract">02  LLM JSON</a></li>
+        <li><a href="#gates">03  Gates</a></li>
+        <li><a href="#output">04  Output</a></li>
+      </ol>
+    </nav>
+    <main>
+      <header class="mast">
+        <h1>One enquiry, four pages.</h1>
+        <p class="note">Interview walkthrough. Production is email, a spreadsheet, and a JSONL log. This page is not that product.</p>
+      </header>
+      <div class="controls">
+        <select id="seed"></select>
+        <label class="llm"><input type="checkbox" id="llm" /> Live LLM if key present</label>
+        <button type="button" id="run">Run</button>
+      </div>
+      <p class="err" id="err" hidden></p>
+      <section class="decision" id="banner">
+        <div class="status" id="banner-status">Select an enquiry.</div>
+        <dl id="banner-meta"></dl>
+      </section>
+
+      <article class="entry" id="intake">
+        <h2>01  Intake: free text as submitted</h2>
+        <div class="meta" id="intake-meta"></div>
+        <div class="prose" id="intake-text"></div>
+      </article>
+
+      <article class="entry" id="extract">
+        <h2>02  Restructuring: facts the model is allowed to emit</h2>
+        <p class="source" id="extract-source"></p>
+        <pre class="json" id="extract-json"></pre>
+      </article>
+
+      <article class="entry" id="gates">
+        <h2>03  Deterministic gates: policy.yaml, zero LLM</h2>
+        <p class="source">Click a gate for how it is implemented and why it exists. First fired gate stops the chain.</p>
+        <div class="gates" id="gate-list"></div>
+        <p class="source" style="margin-top:18px">Rule trace</p>
+        <pre class="json" id="trace"></pre>
+      </article>
+
+      <article class="entry" id="output">
+        <h2>04  Output JSON and where it goes next</h2>
+        <pre class="json" id="out-json"></pre>
+        <p class="source" style="margin-top:18px">Email the lead actually reads</p>
+        <pre class="json" id="email"></pre>
+        <p class="source" style="margin-top:18px">Spreadsheet row (empty correction column)</p>
+        <pre class="json" id="sheet"></pre>
+        <p class="source" style="margin-top:18px">Future paths</p>
+        <div class="paths" id="paths"></div>
+      </article>
+    </main>
+  </div>
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    async function loadSeeds() {
+      const res = await fetch("/api/seeds");
+      const data = await res.json();
+      const sel = $("seed");
+      sel.innerHTML = data.seeds.map(s =>
+        `<option value="${s.enquiry_id}">${s.label}</option>`
+      ).join("");
+      $("llm").disabled = !data.has_llm_key;
+      if (!data.has_llm_key) $("llm").parentElement.title = "No ANTHROPIC_API_KEY in this process";
+      sel.value = "HG-2026-0011";
+      await run();
+    }
+
+    async function run() {
+      const id = $("seed").value;
+      const llm = $("llm").checked;
+      const res = await fetch(`/api/run/${id}?llm=${llm}`);
+      const d = await res.json();
+      render(d);
+    }
+
+    function render(d) {
+      const err = $("err");
+      if (d.llm_error) { err.hidden = false; err.textContent = d.llm_error; }
+      else { err.hidden = true; }
+
+      const banner = $("banner");
+      const routed = !d.decision.abstained;
+      banner.className = "decision " + (routed ? "routed" : "held");
+      $("banner-status").textContent = routed
+        ? `${d.decision.complexity} · ${d.decision.estimated_hours}h`
+        : `Abstain · ${d.decision.abstain_reason || "held"}`;
+      $("banner-meta").innerHTML = `
+        <dt>Route</dt><dd>${d.decision.route_name || ""} ${d.decision.route_to || ""}</dd>
+        <dt>Line</dt><dd>${d.decision.service_line || "none committed"}</dd>
+        <dt>Case</dt><dd>${d.hard_case_type || "clean"}</dd>`;
+
+      const i = d.intake;
+      $("intake-meta").innerHTML = [
+        ["id", i.enquiry_id],
+        ["company", i.company_name],
+        ["industry", i.industry],
+        ["size", i.company_size],
+        ["urgency", i.urgency + " (form field, not complexity)"],
+      ].map(([k,v]) => `<div><span>${k}</span><br>${v}</div>`).join("");
+      $("intake-text").textContent = i.description || "(empty)";
+
+      $("extract-source").textContent = d.extraction_source === "live_llm"
+        ? "Source: live model call, then span validation."
+        : "Source: authored driver vector for this seed. Not a live LLM call. Toggle Live LLM if a key is set.";
+      $("extract-json").textContent = JSON.stringify(d.extraction, null, 2);
+
+      $("gate-list").innerHTML = d.gates.map(g => `
+        <details class="gate">
+          <summary>
+            <span class="st ${g.status}">${g.status.replace("_", " ")}</span>
+            <span>${g.title}</span>
+          </summary>
+          <div class="how"><b>How.</b> ${g.how}<br><b>Why.</b> ${g.why}</div>
+        </details>`).join("");
+      $("trace").textContent = (d.rule_trace || []).join("\n");
+
+      $("out-json").textContent = JSON.stringify(d.output_json, null, 2);
+      $("email").textContent = d.email;
+      $("sheet").textContent = JSON.stringify(d.sheet_row, null, 2);
+      $("paths").innerHTML = d.future_paths.map(p =>
+        `<div class="path"><b>${p.title}</b><span>${p.detail}</span></div>`
+      ).join("");
+    }
+
+    $("run").addEventListener("click", run);
+    $("seed").addEventListener("change", run);
+    loadSeeds();
+  </script>
+</body>
+</html>
