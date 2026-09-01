@@ -294,12 +294,14 @@ def evaluate_gates(enquiry: Enquiry, extraction: Extraction, scored, policy: dic
         },
         {
             "id": "low_evidence",
-            "title": "Low evidence / null scoring drivers",
+            "title": "Low evidence / material unknown",
             "how": (
-                "Any null scoring driver (threshold 1 in policy.yaml), or no work signals."
+                "An unknown driver blocks a committed tier only when filling it in could "
+                "move the hours across a tier boundary. The null-count in policy.yaml is a "
+                "backstop for letters too sparse to triage (threshold 4)."
                 + (f" Null now: {', '.join(scored.null_drivers)}." if scored.null_drivers else "")
             ),
-            "why": "Null is not zero. Unknown systems (+0 or +10h) can move 30h simple to 40h moderate. This is not the gate when two owners already conflict.",
+            "why": "Null is not zero. Unknown systems on a 30h tax can reach 40h moderate, so that holds. The same unknown on an 80h M&A cannot leave complex, so that commits and the email says the hours omit it.",
             "fired": (not scored.line_scores) or scored.low_evidence,
         },
         {
@@ -451,6 +453,58 @@ def run_seed(enquiry_id: str, use_llm: bool = False) -> dict:
 def _payload(enquiry, extraction, extraction_source, llm_error, hard_case_type) -> dict:
     """Journal JSON for one column: decision, gates, email, sheet row."""
     policy = load_policy()
+    if extraction_source == "failed":
+        from intake_triage.failsafe import failsafe_decision
+
+        decision = failsafe_decision(
+            enquiry, llm_error or "extraction failed", policy, stage="extraction"
+        )
+        gates = [
+            {
+                "id": "extraction_failed",
+                "title": "Extraction did not run",
+                "how": "The model call failed, or no API key was present. Nothing was scored.",
+                "why": "An outage is not a terse letter. The analyst must see extraction_failed, not low_evidence.",
+                "fired": True,
+                "status": "fired",
+            }
+        ]
+        lead = policy["leads"].get(decision.route_to, {}).get("name") if decision.route_to else None
+        return {
+            "disclaimer": "Interview journal, not the production surface.",
+            "extraction_source": extraction_source,
+            "llm_error": llm_error,
+            "hard_case_type": hard_case_type,
+            "intake": {
+                "enquiry_id": enquiry.enquiry_id,
+                "company_name": enquiry.company_name,
+                "contact_name": enquiry.contact_name,
+                "industry": enquiry.industry.value if enquiry.industry else None,
+                "company_size": enquiry.company_size.value if enquiry.company_size else None,
+                "urgency": enquiry.urgency.value if enquiry.urgency else None,
+                "submitted_at": enquiry.submitted_at.isoformat(),
+                "description": enquiry.description,
+            },
+            "extraction": extraction.model_dump(mode="json"),
+            "gates": gates,
+            "provisional_lines": [],
+            "null_drivers": [],
+            "rule_trace": decision.rule_trace,
+            "decision": {
+                "abstained": decision.abstained,
+                "abstain_reason": decision.abstain_reason.value if decision.abstain_reason else None,
+                "service_line": None,
+                "complexity": None,
+                "estimated_hours": None,
+                "route_to": decision.route_to,
+                "route_name": lead,
+            },
+            "output_json": decision.model_dump(mode="json"),
+            "email": format_email(enquiry, decision, policy),
+            "sheet_row": sheet_row(enquiry, decision),
+            "future_paths": [],
+        }
+
     scored = score_extraction(extraction, enquiry, policy)
     decision = decide(enquiry, extraction, policy)
     gates = evaluate_gates(enquiry, extraction, scored, policy)

@@ -42,7 +42,7 @@ The model reads. The policy decides. Anything a person could be asked to justify
 | A12 | Complexity is accumulated judgment, not a written rubric. | The PDF names three tiers and says the process is error-prone. | If a rubric exists, encode it in policy.yaml. | Ask to see the rubric. |
 | A13 | No labelled historical enquiries exist. | The PDF requires synthetic data. | Mailbox archive would replace synthetic labels. | Ask for stored history. |
 | A14 | Volume stays under 100/week for this design. Batch is a CSV dump walked sequentially, not a queue. | The PDF is 40-60. | At 500/week a queue becomes justified. | Confirm trailing volume. |
-| A15 | Scoring constants are starting values. | The PDF names tiers, not hours. | Wrong constants mis-tier work. That is why they live in policy.yaml. | Calibrate in shadow mode. |
+| A15 | Scoring constants and the materiality ceiling are starting values. | The PDF names tiers, not hours. | Wrong constants mis-tier work. That is why they live in policy.yaml. | Calibrate in shadow mode. |
 
 What does not change if the hypotheticals are wrong: evidence-span extraction, deterministic scoring, abstention with two candidates, and the refusal to let the model emit complexity.
 
@@ -76,7 +76,11 @@ Multipliers: hard deadline x1.25; sme 1.0, mid 1.1, enterprise 1.2.
 
 Tiers: Simple hours < 40. Moderate 40 inclusive to < 80. Complex >= 80.
 
-Abstain if: empty/injection/vendor/job (out_of_taxonomy); two evidenced signals with different owners (cross_lead_conflict), even if some modifiers are still null; otherwise empty work_signals or any null scoring driver (low_evidence, threshold 1 in policy.yaml). Same-lead transaction+tax does not abstain. Route to James, primary MA_TRANSACTION.
+Abstain if: empty/injection/vendor/job (out_of_taxonomy); two evidenced signals with different owners (cross_lead_conflict), even if some modifiers are still null; otherwise empty work_signals, or a null driver that could move hours across a tier boundary (low_evidence). Same-lead transaction+tax does not abstain. Route to James, primary MA_TRANSACTION.
+
+A missing systems flag on a 30h tax can reach 40h, so that holds. The same flag on an 80h M&A cannot leave complex, so that commits. Hours on a commit that still has unknowns omit those modifiers; the email says so. The null-count in policy.yaml is a backstop for letters too sparse to triage (threshold 4), not the primary rule.
+
+A model outage or an unparseable row is `extraction_failed`, never `low_evidence`. The journal and the CLI both use that label.
 
 Provisional hours may still be shown on abstention. They omit unknown modifiers. They are not a routing decision.
 

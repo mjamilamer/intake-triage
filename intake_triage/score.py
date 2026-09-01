@@ -77,39 +77,33 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
     if _driver_null(deadline):
         null_drivers.append("deadline_kind")
         trace.append("NULL: deadline kind not determinable from text")
-        deadline_mult = 1.0  # omitted unknown; committed score abstains
+        deadline_mult = 1.0  # omitted unknown; materiality test below decides
         hard = False
     else:
         hard = deadline.value == DeadlineKind.HARD
         deadline_mult = float(policy["multipliers"]["hard_deadline"]) if hard else 1.0
 
-    regulator = extraction.regulator_or_investigation
-    if _driver_null(regulator):
-        null_drivers.append("regulator_or_investigation")
-        trace.append("NULL: regulator or investigation pressure not determinable from text")
-        regulator_on = False  # unknown is not "no regulator"
-    else:
-        regulator_on = bool(regulator.value)
+    # Escalating-factor booleans. Unknown is not "no regulator": the hour arithmetic
+    # omits it, and the materiality test below decides whether that omission could
+    # change the tier. Silence is never quietly scored as a negative.
+    def _flag(field: str, label: str) -> tuple[bool, Driver | None, bool]:
+        """Returns (value_now, driver, unknown)."""
+        driver = getattr(extraction, field)
+        if not _driver_null(driver):
+            return bool(driver.value), driver, False
+        null_drivers.append(field)
+        trace.append(f"NULL: {label} not determinable from text")
+        return False, driver, True
 
-    systems = extraction.systems_change
-    if _driver_null(systems):
-        null_drivers.append("systems_change")
-        trace.append("NULL: systems change not determinable from text")
-        systems_on = False  # unknown is not "no systems change"
-    else:
-        systems_on = bool(systems.value)
-
-    multi = extraction.multi_party
-    if _driver_null(multi):
-        null_drivers.append("multi_party")
-        trace.append("NULL: multi-party involvement not determinable from text")
-        multi_on = False  # unknown is not "single party"
-    else:
-        multi_on = bool(multi.value)
+    regulator_on, regulator, regulator_unknown = _flag(
+        "regulator_or_investigation", "regulator or investigation pressure"
+    )
+    systems_on, systems, systems_unknown = _flag("systems_change", "systems change")
+    multi_on, multi, multi_unknown = _flag("multi_party", "multi-party involvement")
 
     # Unknown modifiers are omitted from the hour arithmetic. That number is
-    # provisional only. A committed tier requires every scoring driver present
-    # (policy abstention.low_evidence_null_threshold, currently 1).
+    # the floor. Materiality below decides whether the omission can change the
+    # tier. A committed route is allowed only when the worst case stays put.
     adds = policy["additives"]
     additive = 0
     additive += extra_jurs * int(adds["extra_jurisdiction_hours"])
@@ -121,6 +115,23 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
         additive += int(adds["systems_change_hours"])
     if multi_on:
         additive += int(adds["multi_party_hours"])
+
+    # Worst case: every open-world unknown takes its escalating value. Compared
+    # against the committed number below to decide whether the unknown is material.
+    ceiling = int(policy["abstention"].get("unstated_count_ceiling", 2))
+    additive_max = additive
+    if "jurisdiction_names" in null_drivers:
+        additive_max += max(ceiling - 1, 0) * int(adds["extra_jurisdiction_hours"])
+    if "entity_count" in null_drivers:
+        additive_max += max(ceiling - 1, 0) * int(adds["extra_entity_hours"])
+    if "workstream_count" in null_drivers:
+        additive_max += max(ceiling - 1, 0) * int(adds["extra_workstream_hours"])
+    if regulator_unknown:
+        additive_max += int(adds["regulator_or_investigation_hours"])
+    if systems_unknown:
+        additive_max += int(adds["systems_change_hours"])
+    if multi_unknown:
+        additive_max += int(adds["multi_party_hours"])
 
     size = enquiry.company_size
     if size is None:
@@ -139,20 +150,31 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
     else:
         size_mult = float(policy["multipliers"]["company_size"][size.value])
 
+    hard_mult = float(policy["multipliers"]["hard_deadline"])
+    deadline_mult_max = hard_mult if "deadline_kind" in null_drivers else deadline_mult
+    size_mult_max = size_mult
+    if "company_size" in null_drivers:
+        size_mult_max = max(float(v) for v in policy["multipliers"]["company_size"].values())
+
+    # A letter this sparse is not a triage problem, it is an incomplete enquiry.
+    # The threshold is a backstop for those, not the primary abstention rule.
     threshold = int(policy["abstention"]["low_evidence_null_threshold"])
-    low_evidence = len(null_drivers) >= threshold or not signals
+    too_sparse = len(null_drivers) >= threshold
+    low_evidence = not signals
 
     signal_map: dict[WorkSignal, ServiceLine] = {
         WorkSignal(key): ServiceLine(value) for key, value in policy["work_signal_map"].items()
     }
 
     line_scores: list[LineScore] = []
+    hours_max: dict[ServiceLine, int] = {}
     for signal in signals:
         line = signal_map[signal.value]
         spec = policy["service_lines"][line.value]
         base = int(spec["base_hours"])
         raw = (base + additive) * deadline_mult * size_mult
         hours = round_half_up(raw)
+        hours_max[line] = round_half_up((base + additive_max) * deadline_mult_max * size_mult_max)
         spans = [s for s in [signal.evidence_span, jur_span] if s]
         line_trace = [f"Base: {line.value} {base}h"]
         if extra_jurs:
@@ -209,10 +231,7 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
         )
         trace.extend(line_trace)
 
-    if null_drivers:
-        trace.append(
-            "PROVISIONAL: unknown drivers omitted from hours; no committed tier until they are present"
-        )
+
 
     if not line_scores:
         return ScoreResult(
@@ -234,6 +253,34 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
         for item in ranked[1:]
         if winner.hours > 0 and abs(item.hours - winner.hours) / winner.hours <= proximity
     ]
+    # Materiality. An unknown only blocks a committed tier if knowing it could move
+    # the answer across a tier boundary. A missing systems flag on a 30h matter can
+    # reach 40h and flip simple to moderate, so that abstains. The same missing flag
+    # on a 95h matter cannot leave complex, so it commits and says what it assumed.
+    worst = hours_max.get(winner.service_line, winner.hours)
+    committed_tier = tier_for(winner.hours, policy)
+    worst_tier = tier_for(worst, policy)
+    if null_drivers and worst_tier is not committed_tier:
+        low_evidence = True
+        trace.append(
+            "PROVISIONAL: MATERIAL UNKNOWN: "
+            + ", ".join(null_drivers)
+            + f" could move {winner.hours}h ({committed_tier.value}) to "
+            + f"{worst}h ({worst_tier.value}). No committed tier."
+        )
+    elif null_drivers and too_sparse:
+        low_evidence = True
+        trace.append(
+            f"PROVISIONAL: TOO SPARSE: {len(null_drivers)} unknown drivers "
+            + f"({', '.join(null_drivers)}). Incomplete enquiry, not a triage decision."
+        )
+    elif null_drivers:
+        trace.append(
+            "IMMATERIAL UNKNOWN: "
+            + ", ".join(null_drivers)
+            + f" unknown, but worst case {worst}h stays {committed_tier.value}. Committed."
+        )
+
     committed = not low_evidence
     return ScoreResult(
         estimated_hours=winner.hours if committed else None,

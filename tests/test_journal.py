@@ -146,3 +146,29 @@ def test_cache_roundtrip(tmp_path, monkeypatch):
     card = journal_mod.intake_card("HG-2026-0001")
     assert card["has_last"] is True
     assert card["form_filled"]["company_name"] == "Northbridge Payroll Ltd"
+
+
+def test_journal_llm_failure_is_extraction_failed(monkeypatch):
+    monkeypatch.setattr("intake_triage.journal.load_env_file", lambda: None)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test-not-real")
+
+    def boom(*_args, **_kwargs):
+        raise RuntimeError("API down")
+
+    monkeypatch.setattr("intake_triage.extract.extract_with_llm", boom)
+    payload = run_seed("HG-2026-0001", use_llm=True)
+    assert payload["extraction_source"] == "failed"
+    assert payload["decision"]["abstain_reason"] == "extraction_failed"
+    assert payload["decision"]["service_line"] is None
+    assert payload["gates"][0]["id"] == "extraction_failed"
+    assert "NOT TRIAGED" in payload["email"]
+    assert "low_evidence" not in (payload["decision"]["abstain_reason"] or "")
+
+
+def test_journal_missing_key_is_extraction_failed(monkeypatch):
+    monkeypatch.setattr("intake_triage.journal.load_env_file", lambda: None)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    payload = run_seed("HG-2026-0001", use_llm=True)
+    assert payload["extraction_source"] == "failed"
+    assert payload["decision"]["abstain_reason"] == "extraction_failed"
+    assert "NOT TRIAGED" in payload["email"]

@@ -46,7 +46,7 @@ web form (Typeform is a fixture; assumption, not in the brief)
 
 Every extracted field carries a verbatim quote from the enquiry, and a span that is not a substring of the source is dropped along with its value. This does three things: it turns hallucinated fields into nulls instead of confident errors, it makes the routing email self-explaining ("complex because: two jurisdictions, hard deadline, regulator involved, quoting these phrases"), and it gives an operational metric, span rejection rate, that moves before accuracy visibly degrades.
 
-Null means the text does not say. Null is not zero and not false. A missing entity count is not one entity.
+Null means the text does not say. Null is not zero and not false. A missing entity count is not one entity. An unknown only blocks a committed route when filling it in could move the hours across a tier boundary. If the worst case stays in the same tier, the system commits, omits the unknown from the hour figure, and says so on the email. That is A15, sitting in `policy.yaml` and `score.py`, not a model behaviour.
 
 ## Untrusted input
 

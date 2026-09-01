@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections import Counter
 from pathlib import Path
 
@@ -9,9 +10,135 @@ from intake_triage.emit import format_email, format_sheet_csv, sheet_row, append
 from intake_triage.generate import seed_to_enquiry, seed_to_extraction, write_preview
 from intake_triage.pipeline import triage_from_extraction
 from intake_triage.policy_loader import load_policy
+from intake_triage.schema import Extraction
 from intake_triage.seeds import SEEDS
 
+EXTRACTION_EVAL = Path(__file__).resolve().parent.parent / "data" / "extraction_eval.json"
+
 ROOT = Path(__file__).resolve().parent.parent
+
+
+
+MONDAY_PLAN = (
+    "What I would run on Monday. `extract_with_llm` against all 20 preview descriptions on the "
+    "pinned Sonnet snapshot, scoring each driver for value correctness and for whether its "
+    "evidence span survived the substring check, then the extracted vectors through score and "
+    "route for end-to-end accuracy. About an hour of work. I will not invent an accuracy number "
+    "in the meantime."
+)
+
+
+def _extraction_section() -> list[str]:
+    """Render section 1 from a live run if data/extraction_eval.json exists. Never estimate."""
+    if not EXTRACTION_EVAL.exists():
+        return [
+            "NOT MEASURED. No live extraction result is on disk, so there is no accuracy number "
+            "here and none has been estimated. Run `python -m intake_triage.eval_extraction`.",
+            "",
+            MONDAY_PLAN,
+        ]
+    data = json.loads(EXTRACTION_EVAL.read_text(encoding="utf-8"))
+    n = data["n"]
+    pd = data["per_driver"]["model_only"]
+    shipped = data["per_driver"]["as_shipped"]
+    slots = sum(d["n"] for d in pd.values())
+    ok = sum(d["correct"] for d in pd.values())
+    ok_shipped = sum(d["correct"] for d in shipped.values())
+    policy = load_policy()
+    live = []
+    for rec, seed in zip(data["records"], SEEDS[:n]):
+        extracted = Extraction.model_validate(rec["model_only"]["extraction"])
+        decision = triage_from_extraction(seed_to_enquiry(seed), extracted, policy)
+        live.append((seed, decision))
+    abstained = sum(1 for _, d in live if d.abstained)
+    committed = n - abstained
+    expected_abstain = sum(1 for s in SEEDS[:n] if s["expected"]["abstained"])
+    route_ok = sum(
+        1
+        for seed, d in live
+        if d.route_to == seed["expected"]["route_to"]
+    )
+    tier_ok_live = sum(
+        1
+        for seed, d in live
+        if (d.complexity.value if d.complexity else None) == seed["expected"]["tier"]
+    )
+    abstain_ok_live = sum(
+        1 for seed, d in live if d.abstained is seed["expected"]["abstained"]
+    )
+    routed_ok = sum(
+        1
+        for seed, d in live
+        if not d.abstained and d.route_to == seed["expected"]["route_to"]
+    )
+    reasons = Counter(
+        d.abstain_reason.value for _, d in live if d.abstained and d.abstain_reason
+    )
+    reason_summary = ", ".join(f"{count} {name}" for name, count in reasons.most_common())
+    ranked_drivers = sorted(pd.items(), key=lambda kv: kv[1]["correct"] / kv[1]["n"])
+    weakest = " and ".join(
+        f"`{field}` at {d['correct'] / d['n']:.0%}" for field, d in ranked_drivers[:2]
+    )
+
+    lines = [
+        f"Live run: model `{data['model']}`, prompt `{data['prompt_version']}`, {n} preview "
+        "descriptions, one forced-tool call each, scored against the authored driver vectors.",
+        "",
+        f"**Per-driver value accuracy: {ok}/{slots} slots ({ok / slots:.0%}).** With the "
+        f"extract.py span-hint tables active it is {ok_shipped}/{slots} "
+        f"({ok_shipped / slots:.0%}). Those tables are phrases copied out of these same 20 "
+        "descriptions, so the second number is measured partly on its own source text. They "
+        f"differ by {abs(ok_shipped - ok)} slot of {slots}, so the hints are not what carries "
+        "this result, but they should still come out before any number is quoted externally.",
+        "",
+        "| Driver | Value correct | Span survived |",
+        "|---|---|---|",
+    ]
+    for field, d in pd.items():
+        lines.append(
+            f"| `{field}` | {d['correct']}/{d['n']} ({d['correct'] / d['n']:.0%}) | "
+            f"{d['span']}/{d['n']} |"
+        )
+    lines += [
+        "",
+        f"Evidence spans rejected by the substring check: "
+        f"{data['span_rejections']['model_only']} across {n} enquiries.",
+        "",
+        "### End to end on extracted vectors",
+        "",
+        f"Routing {route_ok}/{n}. Tier {tier_ok_live}/{n}. Abstention flag {abstain_ok_live}/{n}.",
+        "",
+        f"**Committed {committed} of {n}; abstained {abstained}.** Expected abstention on this "
+        f"set is {expected_abstain} of {n}, so the system is still more cautious than the spec. "
+        f"Of the {committed} it committed, {routed_ok} went to the right lead."
+        + (
+            ""
+            if committed
+            else " Nothing reached a lead, so the deterministic layer was never given the "
+            "chance to be right or wrong about one. That is a failure, not a safety feature."
+        ),
+        "",
+        "Abstention reasons: " + (reason_summary or "none") + ".",
+        "",
+        "What still costs accuracy: the weakest drivers are "
+        + weakest
+        + ". Their dominant failure is expected `False`, got `None`. The authored vectors record "
+        "an unmentioned negative as `False` with a null span, and `validate_evidence_spans` nulls "
+        "any value whose span is not verbatim in the source. Almost no enquiry says no regulator "
+        "is involved, so a negative fact cannot survive validation. The model obeyed the prompt "
+        "rule that null means the text does not say; the seeds were authored under the opposite "
+        "rule. That conflict is unresolved and it is a policy decision, not a modelling one.",
+        "",
+        "What that no longer does is block everything. Abstention is now decided by materiality "
+        "in `score.py`: an unknown blocks a committed tier when it could move the hours across a "
+        "tier boundary, and does not when it could not. A missing systems flag on a 30h matter "
+        "can reach 40h and flips simple to moderate, so that abstains; the same flag on a 95h "
+        "matter cannot leave complex, so it commits and records what it assumed. The null count "
+        "in `policy.yaml` is now only a backstop for letters too sparse to triage at all. At a "
+        "threshold of 1 it pre-empted that test and abstained on every enquiry, including ones "
+        "where every driver was extracted correctly with a valid span.",
+    ]
+    return lines
 
 
 def run_eval() -> str:
@@ -70,10 +197,11 @@ def run_eval() -> str:
         "",
         "`data/enquiries_150.csv` is intake-only free text (no extraction JSON, no expected labels). `data/call_batch.csv` holds 50 of those rows (15 easy / 20 medium / 15 hard) for a live CLI run with `--llm`. Offline numbers below are still the 20 locked seeds in `seeds.py`.",
         "",
-        "## 1. Per-driver extraction accuracy",
-        "NOT MEASURED as a published number. The figures below use authored driver vectors so the deterministic layer can be tested in isolation. Live extract has been run in the interview journal. That is a demo of the two-layer split, not a scored gold set, so there is no extraction MAE in this file.",
+        "## 1. Per-driver extraction accuracy (live)",
+        *_extraction_section(),
         "",
-        "What I would run on Monday, in order. First, `extract_with_llm` against all 20 preview descriptions on the pinned Sonnet snapshot, scoring each driver three ways: value correct, value correct with a valid evidence span, and span rejected by the substring check. Per-driver accuracy matters more than an aggregate, because a null `entity_count` costs 4 hours of estimate while a wrong `work_signals` costs a misroute to another human. Forced tool choice is the constraint; the current SDK does not take a temperature knob. Second, feed the extracted vectors, not the authored ones, through score and route to get end-to-end tier and routing accuracy, which is the only number in this document that would mean anything to a partner. The current abstention threshold is 1 null scoring driver (A15). That is about an hour of work. The reason it is not here is that I will not invent an accuracy number from a handful of journal clicks.",
+        "## Sections 2 to 8: oracle path",
+        "Everything below is computed from the authored driver vectors, not from model output. It is a regression test on score.py and route.py. Section 1 is the live run, and where the two disagree, section 1 is what production does today.",
         "",
         "## 2. Effort estimate MAE in hours",
         f"MAE on non-abstain locked seeds: {mae:.2f}h (should be 0.00 if score.py matches preview_spec).",

@@ -8,9 +8,9 @@ Ten questions a technical panel is most likely to ask, hardest first. Each answe
 
 It proves internal consistency and nothing else: I wrote the expected hours by hand from the spec, and `score.py` reproduces them, so this is a regression test that would catch me breaking the scorer, not evidence the tiers are right. The real measurement is two weeks of shadow mode where the analyst tags normally and we adjudicate every disagreement, and until that happens I have no accuracy number worth quoting.
 
-### 2. You never ran the model. How do you know extraction works? **WEAKNESS**
+### 2. You ran the model. What happened? **WEAKNESS**
 
-I have run live extract in the journal. EVAL_RESULTS still says not measured because that file is a scored gold set, and I do not have one. The 20 preview records carry authored driver vectors so I could test the deterministic layer in isolation. Live extract is how I show the two-layer split. It is not a number I would quote to a partner.
+Per-driver value accuracy is 74% of 180 slots, and end to end it commits on 6 of 20 and abstains on 14, with all 6 of the commitments going to the right lead. High precision and low recall is the right way round for triage, but 14 abstentions is more caution than the spec wants and the gap is a contract conflict I have not resolved: the seeds record an unmentioned negative as `False`, the prompt says null means the text does not say, and span validation nulls anything without a verbatim quote.
 
 ### 3. Twenty seeds. Your own plan said 150. **WEAKNESS**
 
@@ -45,6 +45,16 @@ Judgment, and each has a specific reason: there is no corpus to retrieve from, ~
 The routing table, which is why it is nine lines of YAML rather than logic, and why the decision log stamps model and prompt version on every row so a metric shift after a change is attributable rather than arguable. What does not survive a taxonomy change is the calibration, so any line added or merged resets the constants for the affected lines and puts them back into shadow mode.
 
 ---
+
+## If they follow up
+
+### Your first live run abstained on everything. What did you change? **WEAKNESS**
+
+The abstention rule was counting blank drivers, and at a threshold of one blank it abstained on every enquiry including ones where every driver was extracted correctly with a valid span. I replaced the count with a materiality test: an unknown blocks a committed tier only when it could move the hours across a tier boundary, so a missing systems flag abstains on a 30h matter that could reach 40h and commits on a 95h matter that cannot leave complex, and the count survives only as a backstop for letters too sparse to triage.
+
+### What happens when the model is down?
+
+Any failure abstains as `extraction_failed` and writes an email and a JSON copy under `data/out/review/` for a human, so an enquiry is never dropped because a field would not parse or an API call returned 401. The reason code matters as much as the routing: an outage and a genuinely terse letter both produce an abstention, and if they carry the same label the analyst cannot tell a bad week from an incident.
 
 ## Two things to volunteer before being asked
 

@@ -4,7 +4,7 @@
 
 **Monitor, baselined before go-live:** reroute-after-assignment by class (the free and truest error signal), abstention rate trend, class-distribution drift, evidence-span rejection rate, unparseable model outputs, and every version-pin change. Span rejection and abstention move before accuracy visibly degrades, which is why they are the alarms rather than the report.
 
-**Fallback is always abstain, never guess.** An abstention routes to the analyst with the two candidate lines and both hour estimates, so a human decision costs one word. The kill switch disables the function entirely and returns work to the analyst: slower, not wrong. If the analyst is out, degraded auto-routing is round-robin across leads, which is what happens today anyway.
+**Fallback is always abstain, never guess.** An abstention routes to the analyst with the two candidate lines and both hour estimates, so a human decision costs one word. A model outage or an unparseable row is labelled `extraction_failed`, not `low_evidence`, and writes a copy under `data/out/review/`. The kill switch disables the function entirely and returns work to the analyst: slower, not wrong. If the analyst is out, degraded auto-routing is round-robin across leads, which is what happens today anyway.
 
 **Batch is a file, not a job queue.** Forty to sixty rows a week is a CSV export from the form, walked sequentially. `intake_triage.batch` isolates failures: a poisoned description or a missing extraction is one HOLD row, not a stalled morning. Retry is rerun-the-id (`python -m intake_triage run --id HG-2026-0011`), not replay-the-topic. Parallel workers are a later conversation at roughly 500/week.
 

@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
+
+from intake_triage.emit import format_email
 from intake_triage.generate import seed_to_enquiry, seed_to_extraction
 from intake_triage.pipeline import triage_from_extraction
 from intake_triage.schema import ComplexityTier, Extraction, ServiceLine
@@ -82,3 +85,17 @@ def test_cross_lead_wins_over_null_deadline():
     decision = triage_from_extraction(seed_to_enquiry(seed), extraction)
     assert decision.abstained is True
     assert decision.abstain_reason.value == "cross_lead_conflict"
+
+
+def test_unknown_systems_commits_when_already_complex():
+    """80h M&A stays complex even if systems is unknown. Hours omit the unknown."""
+    seed = deepcopy(next(s for s in SEEDS if s["enquiry_id"] == "HG-2026-0003"))
+    seed["extraction"]["systems_change"] = {"value": None, "evidence_span": None}
+    enquiry = seed_to_enquiry(seed)
+    decision = triage_from_extraction(enquiry, seed_to_extraction(seed))
+    assert decision.abstained is False
+    assert decision.complexity == ComplexityTier.COMPLEX
+    assert decision.service_line == ServiceLine.MA_TRANSACTION
+    assert any("IMMATERIAL UNKNOWN" in line for line in decision.rule_trace)
+    email = format_email(enquiry, decision, load_policy())
+    assert "omits unknown modifiers" in email

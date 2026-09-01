@@ -7,7 +7,7 @@ import re
 from io import StringIO
 from pathlib import Path
 
-from intake_triage.schema import Enquiry, Extraction, TriageDecision
+from intake_triage.schema import AbstainReason, Enquiry, Extraction, TriageDecision
 
 
 def _enum_or_str(value) -> str | None:
@@ -67,18 +67,36 @@ def format_email(enquiry: Enquiry, decision: TriageDecision, policy: dict) -> st
                 f"- {item.service_line.value}: {item.hours}h to {lead} ({item.owner})"
             )
         candidate_block = "\n".join(candidates) if candidates else "- none scored"
-        decision_block = (
-            f"{heading}\nReason: {decision.abstain_reason.value if decision.abstain_reason else 'unspecified'}\n"
-            f"Reply 1 or 2, or name the correct line.\n\nCandidates:\n{candidate_block}"
-        )
+        reason = decision.abstain_reason.value if decision.abstain_reason else "unspecified"
+        if decision.abstain_reason is AbstainReason.EXTRACTION_FAILED:
+            # Nothing was scored, so there is nothing to choose between. Asking the
+            # analyst to reply 1 or 2 against an empty candidate list wastes the
+            # minute the failsafe is meant to buy them.
+            heading = "NOT TRIAGED: the system failed on this enquiry"
+            decision_block = (
+                f"{heading}\nReason: {reason}\n"
+                "Triage this one by hand. No service line, tier, or hours were produced,\n"
+                "and no candidates were scored. The cause is in the rule trace below.\n"
+                "This is a system failure, not a difficult enquiry."
+            )
+        else:
+            decision_block = (
+                f"{heading}\nReason: {reason}\n"
+                f"Reply 1 or 2, or name the correct line.\n\nCandidates:\n{candidate_block}"
+            )
     else:
         lead = policy["leads"].get(decision.route_to, {}).get("name", decision.route_to)
         to_name = lead
         to_addr = decision.route_to
+        hours_line = f"Estimated hours: {decision.estimated_hours}"
+        if any("IMMATERIAL UNKNOWN" in line for line in decision.rule_trace):
+            hours_line += (
+                " (omits unknown modifiers; worst case stays this tier. See rule trace.)"
+            )
         decision_block = (
             f"Service line: {decision.service_line.value}\n"
             f"Complexity: {decision.complexity.value}\n"
-            f"Estimated hours: {decision.estimated_hours}\n"
+            f"{hours_line}\n"
             f"Route to: {to_name} ({to_addr})"
         )
 

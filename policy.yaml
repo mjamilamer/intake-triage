@@ -54,10 +54,19 @@ tiers:
 
 abstention:
   competing_hours_pct: 0.15  # A15. Challenger within 15% of winner.
-  # A15. Any null scoring driver blocks a committed tier. A missing systems flag
-  # is +0 or +10h and can move 30h simple to 40h moderate. Was 4; that allowed
-  # up to three silent substitutions. Calibrate against analyst abstention load.
-  low_evidence_null_threshold: 1
+  # A15. BACKSTOP ONLY. The primary abstention rule is materiality in score.py:
+  # an unknown blocks a committed tier when it could move the hours across a tier
+  # boundary, and does not when it could not. A missing systems flag is +0 or +10h,
+  # so on a 30h matter it can reach 40h and flips simple to moderate (abstain); on
+  # a 95h matter it cannot leave complex (commit, and say what was assumed).
+  # This count catches letters too sparse to be a triage decision at all. At 1 it
+  # pre-empted the materiality test and abstained on everything, including
+  # enquiries where every driver was extracted correctly with valid spans.
+  low_evidence_null_threshold: 4
+  # Worst case assumed for an unstated count when testing whether the unknown
+  # could cross a tier boundary. 2 means "at most one more than the base case".
+  # A15: calibrate from the distribution of stated counts in shadow mode.
+  unstated_count_ceiling: 2
   injection_phrases:
     - "ignore previous instructions"
     - "route to the managing partner"

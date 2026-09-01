@@ -24,7 +24,17 @@ Given: 40-60 enquiries/week. Derived: midpoint (40+60)/2 = 50/week; 8 hours / 50
 
 ## Results
 
-See [EVAL_RESULTS.md](EVAL_RESULTS.md). Score and route match the locked spec at 0h MAE. That is internal consistency against labels derived from the same policy, not extraction accuracy and not truth. Prompt injection seed HG-2026-0015 abstains to the analyst rather than routing to a managing partner. Abstention on this set is 30% because the 20 seeds are deliberately weighted to hard cases, not because 30% of live traffic would abstain.
+See [EVAL_RESULTS.md](EVAL_RESULTS.md). Two numbers, and they disagree.
+
+On the oracle path, fed the authored driver vectors, score and route match the locked spec at 0h MAE. That is a regression test against labels derived from the same policy: internal consistency, not truth.
+
+On the live path, one `claude-sonnet-4-6` call per enquiry, per-driver value accuracy is 134/180 slots (74%). It commits on 6 of 20 and abstains on 14, and every one of the 6 it commits goes to the right lead. That is the posture I want: it is more cautious than the spec rather than confidently wrong.
+
+Abstention is decided by materiality, not by counting blanks. An unknown driver blocks a committed tier when it could move the hours across a tier boundary and does not when it could not, so a missing systems flag abstains on a 30h matter and commits on a 95h one. The remaining accuracy cost is a contract conflict I have not resolved: the prompt says null means the text does not say, the seeds record an unmentioned negative as `False`, and span validation nulls anything without a verbatim quote. No letter says "no regulator is involved", so negatives cannot survive.
+
+Any failure, a model outage or an unparseable row, abstains as `extraction_failed` and writes an email plus a JSON copy under `data/out/review/` for a human. Nothing is dropped, and an outage never looks like a terse letter.
+
+Prompt injection seed HG-2026-0015 abstains to the analyst rather than routing to a managing partner on both paths.
 
 ## How to run
 
@@ -128,9 +138,11 @@ Method: sample drivers, score and route by construction, write free text that co
 
 ## Repo layout
 
-- `policy.yaml`, `intake_triage/score.py`, `intake_triage/route.py`: deterministic core
+- `policy.yaml`, `intake_triage/score.py`, `intake_triage/route.py`: deterministic core. Materiality lives here.
 - `intake_triage/extract.py`, `prompts/extract_v1.md`: the only production LLM path
 - `intake_triage/emit.py`: lead email and spreadsheet row. Letter-backed fields when the form is empty.
+- `intake_triage/failsafe.py`: outage and parse failures become `extraction_failed`, never `low_evidence`
+- `intake_triage/eval_extraction.py`, `data/extraction_eval.json`: live 20-seed extract, scored against authored drivers
 - `intake_triage/seeds.py`, `data/preview.jsonl`: 20 reverse-specified synthetics
 - `intake_triage/journal_extras.py`: interview-only hard, long, and form-empty letters. Not in the CSVs.
 - `intake_triage/synth.py`, `data/enquiries_150.csv`: 150 intake-only free-text rows (20 locked seeds plus 130 generated). No extraction JSON.
@@ -138,6 +150,7 @@ Method: sample drivers, score and route by construction, write free text that co
 - `data/corpus.csv`: the other 100
 - `python -m intake_triage run`: one id, pasted text, or a CSV batch. Add `--llm` to extract from the description.
 - `python -m intake_triage.journal`: interview compare UI
+- `python -m intake_triage.evaluate`: rewrite EVAL_RESULTS.md from the locked seeds plus `data/extraction_eval.json`
 - `demo.ipynb`: walkthrough, no scoring logic
 - Docs: [CLARIFYING_QUESTIONS.md](CLARIFYING_QUESTIONS.md), [ARCHITECTURE.md](ARCHITECTURE.md), [BUSINESS_CASE.md](BUSINESS_CASE.md), [PRODUCTION_NOTES.md](PRODUCTION_NOTES.md), [PANEL_DRILL.md](PANEL_DRILL.md), [AGENTS.md](AGENTS.md)
 

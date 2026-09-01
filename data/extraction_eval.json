@@ -1,0 +1,3428 @@
+{
+  "n": 20,
+  "model": "claude-sonnet-4-6",
+  "prompt_version": "extract_v1",
+  "tokens_in": 60042,
+  "tokens_out": 8599,
+  "per_driver": {
+    "as_shipped": {
+      "work_signals": {
+        "n": 20,
+        "correct": 15,
+        "span": 12
+      },
+      "jurisdiction_names": {
+        "n": 20,
+        "correct": 19,
+        "span": 15
+      },
+      "entity_count": {
+        "n": 20,
+        "correct": 14,
+        "span": 9
+      },
+      "workstream_count": {
+        "n": 20,
+        "correct": 17,
+        "span": 16
+      },
+      "deadline_kind": {
+        "n": 20,
+        "correct": 15,
+        "span": 11
+      },
+      "regulator_or_investigation": {
+        "n": 20,
+        "correct": 11,
+        "span": 7
+      },
+      "systems_change": {
+        "n": 20,
+        "correct": 9,
+        "span": 5
+      },
+      "multi_party": {
+        "n": 20,
+        "correct": 17,
+        "span": 16
+      },
+      "intake_kind": {
+        "n": 20,
+        "correct": 18,
+        "span": 18
+      }
+    },
+    "model_only": {
+      "work_signals": {
+        "n": 20,
+        "correct": 14,
+        "span": 11
+      },
+      "jurisdiction_names": {
+        "n": 20,
+        "correct": 19,
+        "span": 15
+      },
+      "entity_count": {
+        "n": 20,
+        "correct": 14,
+        "span": 9
+      },
+      "workstream_count": {
+        "n": 20,
+        "correct": 17,
+        "span": 16
+      },
+      "deadline_kind": {
+        "n": 20,
+        "correct": 15,
+        "span": 11
+      },
+      "regulator_or_investigation": {
+        "n": 20,
+        "correct": 11,
+        "span": 7
+      },
+      "systems_change": {
+        "n": 20,
+        "correct": 9,
+        "span": 5
+      },
+      "multi_party": {
+        "n": 20,
+        "correct": 17,
+        "span": 16
+      },
+      "intake_kind": {
+        "n": 20,
+        "correct": 18,
+        "span": 18
+      }
+    }
+  },
+  "end_to_end": {
+    "as_shipped": {
+      "route": 13,
+      "tier": 11,
+      "abstain": 13,
+      "mae": 6.0,
+      "scored_n": 7
+    },
+    "model_only": {
+      "route": 12,
+      "tier": 10,
+      "abstain": 12,
+      "mae": 7.0,
+      "scored_n": 6
+    }
+  },
+  "span_rejections": {
+    "as_shipped": 24,
+    "model_only": 25
+  },
+  "records": [
+    {
+      "enquiry_id": "HG-2026-0001",
+      "hard_case_type": null,
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "tax",
+              "evidence_span": "we do not create a UK corporation-tax issue"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "One UK company only"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "One UK company only"
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Need a review of how we recharge the group so we do not create a UK corporation-tax issue"
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "No filing date hanging over us"
+          },
+          "regulator_or_investigation": {
+            "value": false,
+            "evidence_span": "Need a review of how we recharge the group so we do not create a UK corporation-tax issue"
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "One UK company only"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Need a review of how we recharge the group so we do not create a UK corporation-tax issue"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "professional_services",
+            "evidence_span": "We run payroll for about forty SME clients from Manchester"
+          },
+          "stated_company_size": {
+            "value": "sme",
+            "evidence_span": "about forty SME clients"
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": []
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "tax",
+              "evidence_span": "we do not create a UK corporation-tax issue"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "One UK company only"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "One UK company only"
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Need a review of how we recharge the group so we do not create a UK corporation-tax issue"
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "No filing date hanging over us"
+          },
+          "regulator_or_investigation": {
+            "value": false,
+            "evidence_span": "Need a review of how we recharge the group so we do not create a UK corporation-tax issue"
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "One UK company only"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Need a review of how we recharge the group so we do not create a UK corporation-tax issue"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "professional_services",
+            "evidence_span": "We run payroll for about forty SME clients from Manchester"
+          },
+          "stated_company_size": {
+            "value": "sme",
+            "evidence_span": "about forty SME clients"
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": []
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0002",
+      "hard_case_type": null,
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "strategy",
+              "evidence_span": "view on the operating model"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK business"
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Want a view on the operating model over the next quarter"
+          },
+          "deadline_kind": {
+            "value": "soft",
+            "evidence_span": "over the next quarter"
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "UK business, about 180 people"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Board asked whether brand and operations should sit in separate teams"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": "sme",
+            "evidence_span": "about 180 people"
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "deadline_kind",
+            "expected": "none",
+            "got": "soft"
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "priya.shah@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "moderate",
+        "hours": 40,
+        "span_rejections": [
+          "regulator_or_investigation"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK business"
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Want a view on the operating model over the next quarter"
+          },
+          "deadline_kind": {
+            "value": "soft",
+            "evidence_span": "over the next quarter"
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "UK business, about 180 people"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Board asked whether brand and operations should sit in separate teams"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": "sme",
+            "evidence_span": "about 180 people"
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "work_signals",
+            "expected": [
+              "strategy"
+            ],
+            "got": null
+          },
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "deadline_kind",
+            "expected": "none",
+            "got": "soft"
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "work_signals",
+          "regulator_or_investigation"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0003",
+      "hard_case_type": null,
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "transaction",
+              "evidence_span": "We are buying a small machining shop in the Midlands. Need buy-side diligence on the customer contracts."
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK target only. No other countries."
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Need buy-side diligence on the customer contracts."
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "We have not set a drop-dead date."
+          },
+          "regulator_or_investigation": {
+            "value": false,
+            "evidence_span": "Need buy-side diligence on the customer contracts."
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "UK target only. No other countries."
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "We are buying a small machining shop in the Midlands."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "industrials",
+            "evidence_span": "small machining shop in the Midlands"
+          },
+          "stated_company_size": {
+            "value": "sme",
+            "evidence_span": "small machining shop"
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "james.okonkwo@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "complex",
+        "hours": 80,
+        "span_rejections": []
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "transaction",
+              "evidence_span": "We are buying a small machining shop in the Midlands. Need buy-side diligence on the customer contracts."
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK target only. No other countries."
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Need buy-side diligence on the customer contracts."
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "We have not set a drop-dead date."
+          },
+          "regulator_or_investigation": {
+            "value": false,
+            "evidence_span": "Need buy-side diligence on the customer contracts."
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "UK target only. No other countries."
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "We are buying a small machining shop in the Midlands."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "industrials",
+            "evidence_span": "small machining shop in the Midlands"
+          },
+          "stated_company_size": {
+            "value": "sme",
+            "evidence_span": "small machining shop"
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "james.okonkwo@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "complex",
+        "hours": 80,
+        "span_rejections": []
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0004",
+      "hard_case_type": null,
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "regulatory",
+              "evidence_span": "CQC wrote after an inspection and we need a controls response"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK clinics only"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "one legal entity"
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "we need a controls response"
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": true,
+            "evidence_span": "CQC wrote after an inspection"
+          },
+          "systems_change": {
+            "value": false,
+            "evidence_span": "No system replacement"
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "one legal entity"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "CQC wrote after an inspection and we need a controls response"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "healthcare",
+            "evidence_span": "UK clinics only"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "deadline_kind",
+            "expected": "none",
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": true
+          }
+        ],
+        "route_to": "elena.rossi@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "moderate",
+        "hours": 57,
+        "span_rejections": [
+          "deadline_kind"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "regulatory",
+              "evidence_span": "CQC wrote after an inspection and we need a controls response"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK clinics only"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "one legal entity"
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "we need a controls response"
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": true,
+            "evidence_span": "CQC wrote after an inspection"
+          },
+          "systems_change": {
+            "value": false,
+            "evidence_span": "No system replacement"
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "one legal entity"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "CQC wrote after an inspection and we need a controls response"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "healthcare",
+            "evidence_span": "UK clinics only"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "deadline_kind",
+            "expected": "none",
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": true
+          }
+        ],
+        "route_to": "elena.rossi@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "moderate",
+        "hours": 57,
+        "span_rejections": [
+          "deadline_kind"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0005",
+      "hard_case_type": null,
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK company"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "one entity"
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "We want a data platform so finance and delivery stop arguing over numbers."
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": true,
+            "evidence_span": "This is a warehouse build"
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "nobody else is in the room"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "We want a data platform so finance and delivery stop arguing over numbers."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "work_signals",
+            "expected": [
+              "technology"
+            ],
+            "got": null
+          },
+          {
+            "field": "deadline_kind",
+            "expected": "none",
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": true
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "work_signals",
+          "deadline_kind"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK company"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "one entity"
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "We want a data platform so finance and delivery stop arguing over numbers."
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": true,
+            "evidence_span": "This is a warehouse build"
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "nobody else is in the room"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "We want a data platform so finance and delivery stop arguing over numbers."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "work_signals",
+            "expected": [
+              "technology"
+            ],
+            "got": null
+          },
+          {
+            "field": "deadline_kind",
+            "expected": "none",
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": true
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "work_signals",
+          "deadline_kind"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0006",
+      "hard_case_type": null,
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "tax",
+              "evidence_span": "Need transfer-pricing documentation between the UK family office and a second UK trading company we own."
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "between the UK family office and a second UK trading company"
+          },
+          "entity_count": {
+            "value": 2,
+            "evidence_span": "Two companies, same country."
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Need transfer-pricing documentation between the UK family office and a second UK trading company we own."
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "No year-end crunch."
+          },
+          "regulator_or_investigation": {
+            "value": false,
+            "evidence_span": "Need transfer-pricing documentation between the UK family office and a second UK trading company we own. Two companies, same country. No year-end crunch."
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": true,
+            "evidence_span": "between the UK family office and a second UK trading company we own"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Need transfer-pricing documentation between the UK family office and a second UK trading company we own."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "financial_services",
+            "evidence_span": "UK family office"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": "low",
+            "evidence_span": "No year-end crunch."
+          }
+        },
+        "misses": [
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "multi_party",
+            "expected": false,
+            "got": true
+          }
+        ],
+        "route_to": "james.okonkwo@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "moderate",
+        "hours": 42,
+        "span_rejections": []
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "tax",
+              "evidence_span": "Need transfer-pricing documentation between the UK family office and a second UK trading company we own."
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "between the UK family office and a second UK trading company"
+          },
+          "entity_count": {
+            "value": 2,
+            "evidence_span": "Two companies, same country."
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Need transfer-pricing documentation between the UK family office and a second UK trading company we own."
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "No year-end crunch."
+          },
+          "regulator_or_investigation": {
+            "value": false,
+            "evidence_span": "Need transfer-pricing documentation between the UK family office and a second UK trading company we own. Two companies, same country. No year-end crunch."
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": true,
+            "evidence_span": "between the UK family office and a second UK trading company we own"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Need transfer-pricing documentation between the UK family office and a second UK trading company we own."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "financial_services",
+            "evidence_span": "UK family office"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": "low",
+            "evidence_span": "No year-end crunch."
+          }
+        },
+        "misses": [
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "multi_party",
+            "expected": false,
+            "got": true
+          }
+        ],
+        "route_to": "james.okonkwo@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "moderate",
+        "hours": 42,
+        "span_rejections": []
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0007",
+      "hard_case_type": null,
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "strategy",
+              "evidence_span": "Want an operating-model recommendation"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK",
+              "Germany"
+            ],
+            "evidence_span": "We sell in the UK and Germany"
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Want an operating-model recommendation"
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "No immovable date"
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "We sell in the UK and Germany and the two country teams duplicate merchandising"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "We sell in the UK and Germany"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": "mid",
+            "evidence_span": "About 600 staff"
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "regulator_or_investigation"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "strategy",
+              "evidence_span": "Want an operating-model recommendation"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK",
+              "Germany"
+            ],
+            "evidence_span": "We sell in the UK and Germany"
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Want an operating-model recommendation"
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "No immovable date"
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "We sell in the UK and Germany and the two country teams duplicate merchandising"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "We sell in the UK and Germany"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": "mid",
+            "evidence_span": "About 600 staff"
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "regulator_or_investigation"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0008",
+      "hard_case_type": null,
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "transaction",
+              "evidence_span": "Need diligence on the customer contracts"
+            },
+            {
+              "value": "strategy",
+              "evidence_span": "a day-1 integration plan"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK",
+              "Ireland",
+              "Singapore"
+            ],
+            "evidence_span": "Target has operating companies in the UK, Ireland and Singapore (UK parent plus two local opcos)"
+          },
+          "entity_count": {
+            "value": 3,
+            "evidence_span": "UK parent plus two local opcos"
+          },
+          "workstream_count": {
+            "value": 2,
+            "evidence_span": "Need diligence on the customer contracts and a day-1 integration plan"
+          },
+          "deadline_kind": {
+            "value": "hard",
+            "evidence_span": "SPA has to be signed before 15 October"
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": true,
+            "evidence_span": "Sellers, our PE sponsors and the target CFO are all in the room"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "We are acquiring a 3PL."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "industrials",
+            "evidence_span": "acquiring a 3PL"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": "high",
+            "evidence_span": "SPA has to be signed before 15 October"
+          }
+        },
+        "misses": [
+          {
+            "field": "work_signals",
+            "expected": [
+              "transaction"
+            ],
+            "got": [
+              "transaction",
+              "strategy"
+            ]
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "cross_lead_conflict",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "regulator_or_investigation"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "transaction",
+              "evidence_span": "Need diligence on the customer contracts"
+            },
+            {
+              "value": "strategy",
+              "evidence_span": "a day-1 integration plan"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK",
+              "Ireland",
+              "Singapore"
+            ],
+            "evidence_span": "Target has operating companies in the UK, Ireland and Singapore (UK parent plus two local opcos)"
+          },
+          "entity_count": {
+            "value": 3,
+            "evidence_span": "UK parent plus two local opcos"
+          },
+          "workstream_count": {
+            "value": 2,
+            "evidence_span": "Need diligence on the customer contracts and a day-1 integration plan"
+          },
+          "deadline_kind": {
+            "value": "hard",
+            "evidence_span": "SPA has to be signed before 15 October"
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": true,
+            "evidence_span": "Sellers, our PE sponsors and the target CFO are all in the room"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "We are acquiring a 3PL."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "industrials",
+            "evidence_span": "acquiring a 3PL"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": "high",
+            "evidence_span": "SPA has to be signed before 15 October"
+          }
+        },
+        "misses": [
+          {
+            "field": "work_signals",
+            "expected": [
+              "transaction"
+            ],
+            "got": [
+              "transaction",
+              "strategy"
+            ]
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "cross_lead_conflict",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "regulator_or_investigation"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0009",
+      "hard_case_type": null,
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "across UK hospitals"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "One NHS trust vehicle"
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Need to replace the patient administration system across UK hospitals before the 1 June go-live"
+          },
+          "deadline_kind": {
+            "value": "hard",
+            "evidence_span": "before the 1 June go-live we already announced"
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": true,
+            "evidence_span": "This is a system cutover"
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "One NHS trust vehicle"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Need to replace the patient administration system across UK hospitals"
+          },
+          "stated_company": {
+            "value": "NHS trust",
+            "evidence_span": "One NHS trust vehicle"
+          },
+          "stated_industry": {
+            "value": "healthcare",
+            "evidence_span": "patient administration system across UK hospitals"
+          },
+          "stated_company_size": {
+            "value": "enterprise",
+            "evidence_span": "One NHS trust vehicle"
+          },
+          "stated_urgency": {
+            "value": "high",
+            "evidence_span": "before the 1 June go-live we already announced"
+          }
+        },
+        "misses": [
+          {
+            "field": "work_signals",
+            "expected": [
+              "technology"
+            ],
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "work_signals",
+          "regulator_or_investigation"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "across UK hospitals"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "One NHS trust vehicle"
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Need to replace the patient administration system across UK hospitals before the 1 June go-live"
+          },
+          "deadline_kind": {
+            "value": "hard",
+            "evidence_span": "before the 1 June go-live we already announced"
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": true,
+            "evidence_span": "This is a system cutover"
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "One NHS trust vehicle"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Need to replace the patient administration system across UK hospitals"
+          },
+          "stated_company": {
+            "value": "NHS trust",
+            "evidence_span": "One NHS trust vehicle"
+          },
+          "stated_industry": {
+            "value": "healthcare",
+            "evidence_span": "patient administration system across UK hospitals"
+          },
+          "stated_company_size": {
+            "value": "enterprise",
+            "evidence_span": "One NHS trust vehicle"
+          },
+          "stated_urgency": {
+            "value": "high",
+            "evidence_span": "before the 1 June go-live we already announced"
+          }
+        },
+        "misses": [
+          {
+            "field": "work_signals",
+            "expected": [
+              "technology"
+            ],
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "work_signals",
+          "regulator_or_investigation"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0010",
+      "hard_case_type": null,
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": [
+              "UK",
+              "Norway"
+            ],
+            "evidence_span": "UK"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "one entity"
+          },
+          "workstream_count": {
+            "value": 2,
+            "evidence_span": "Ofgem opened a market-abuse file and we also have a parallel matter with NVE in Norway"
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": false,
+            "evidence_span": "No system work"
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "one entity"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Need an investigations response."
+          },
+          "stated_company": {
+            "value": "UK plc",
+            "evidence_span": "UK plc"
+          },
+          "stated_industry": {
+            "value": "energy",
+            "evidence_span": "Ofgem opened a market-abuse file"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "work_signals",
+            "expected": [
+              "regulatory"
+            ],
+            "got": null
+          },
+          {
+            "field": "workstream_count",
+            "expected": 1,
+            "got": 2
+          },
+          {
+            "field": "deadline_kind",
+            "expected": "none",
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": true,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "work_signals",
+          "deadline_kind",
+          "regulator_or_investigation"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": [
+              "UK",
+              "Norway"
+            ],
+            "evidence_span": "UK"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "one entity"
+          },
+          "workstream_count": {
+            "value": 2,
+            "evidence_span": "Ofgem opened a market-abuse file and we also have a parallel matter with NVE in Norway"
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": false,
+            "evidence_span": "No system work"
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "one entity"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Need an investigations response."
+          },
+          "stated_company": {
+            "value": "UK plc",
+            "evidence_span": "UK plc"
+          },
+          "stated_industry": {
+            "value": "energy",
+            "evidence_span": "Ofgem opened a market-abuse file"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "work_signals",
+            "expected": [
+              "regulatory"
+            ],
+            "got": null
+          },
+          {
+            "field": "workstream_count",
+            "expected": 1,
+            "got": 2
+          },
+          {
+            "field": "deadline_kind",
+            "expected": "none",
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": true,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "work_signals",
+          "deadline_kind",
+          "regulator_or_investigation"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0011",
+      "hard_case_type": "ambiguous_cross_lead",
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "strategy",
+              "evidence_span": "We need a new operating model for underwriting"
+            },
+            {
+              "value": "regulatory",
+              "evidence_span": "help responding to the PRA thematic review"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK mutual"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "one entity"
+          },
+          "workstream_count": {
+            "value": 2,
+            "evidence_span": "a new operating model for underwriting and, in the same letter, help responding to the PRA thematic review"
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": true,
+            "evidence_span": "PRA thematic review"
+          },
+          "systems_change": {
+            "value": false,
+            "evidence_span": "No systems programme"
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "UK mutual, one entity"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "We need a new operating model for underwriting and, in the same letter, help responding to the PRA thematic review."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "financial_services",
+            "evidence_span": "UK mutual, one entity"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "deadline_kind",
+            "expected": "none",
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "cross_lead_conflict",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "strategy",
+              "evidence_span": "We need a new operating model for underwriting"
+            },
+            {
+              "value": "regulatory",
+              "evidence_span": "help responding to the PRA thematic review"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK mutual"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "one entity"
+          },
+          "workstream_count": {
+            "value": 2,
+            "evidence_span": "a new operating model for underwriting and, in the same letter, help responding to the PRA thematic review"
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": true,
+            "evidence_span": "PRA thematic review"
+          },
+          "systems_change": {
+            "value": false,
+            "evidence_span": "No systems programme"
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "UK mutual, one entity"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "We need a new operating model for underwriting and, in the same letter, help responding to the PRA thematic review."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "financial_services",
+            "evidence_span": "UK mutual, one entity"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "deadline_kind",
+            "expected": "none",
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "cross_lead_conflict",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0012",
+      "hard_case_type": "same_lead_overlap",
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "transaction",
+              "evidence_span": "Need diligence on the SPA"
+            },
+            {
+              "value": "tax",
+              "evidence_span": "a view on how the target's group should be held for tax"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "One UK target"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "One UK target"
+          },
+          "workstream_count": {
+            "value": 2,
+            "evidence_span": "Need diligence on the SPA and a view on how the target's group should be held for tax"
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "No drop-dead date"
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "One UK target"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Buying a UK broker. Need diligence on the SPA and a view on how the target's group should be held for tax."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "financial_services",
+            "evidence_span": "Buying a UK broker"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "workstream_count",
+            "expected": 1,
+            "got": 2
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "james.okonkwo@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "complex",
+        "hours": 86,
+        "span_rejections": []
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "transaction",
+              "evidence_span": "Need diligence on the SPA"
+            },
+            {
+              "value": "tax",
+              "evidence_span": "a view on how the target's group should be held for tax"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "One UK target"
+          },
+          "entity_count": {
+            "value": 1,
+            "evidence_span": "One UK target"
+          },
+          "workstream_count": {
+            "value": 2,
+            "evidence_span": "Need diligence on the SPA and a view on how the target's group should be held for tax"
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "No drop-dead date"
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "One UK target"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Buying a UK broker. Need diligence on the SPA and a view on how the target's group should be held for tax."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "financial_services",
+            "evidence_span": "Buying a UK broker"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "workstream_count",
+            "expected": 1,
+            "got": 2
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "james.okonkwo@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "complex",
+        "hours": 86,
+        "span_rejections": []
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0013",
+      "hard_case_type": "two_word",
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": null,
+            "evidence_span": null
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": null,
+            "evidence_span": null
+          },
+          "intake_kind": {
+            "value": "other",
+            "evidence_span": "Need help"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "intake_kind",
+            "expected": null,
+            "got": "other"
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": null,
+            "evidence_span": null
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": null,
+            "evidence_span": null
+          },
+          "intake_kind": {
+            "value": "other",
+            "evidence_span": "Need help"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "intake_kind",
+            "expected": null,
+            "got": "other"
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0014",
+      "hard_case_type": "empty",
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": null,
+            "evidence_span": null
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": null,
+            "evidence_span": null
+          },
+          "intake_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "out_of_taxonomy",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind",
+          "intake_kind"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": null,
+            "evidence_span": null
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": null,
+            "evidence_span": null
+          },
+          "intake_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "out_of_taxonomy",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind",
+          "intake_kind"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0015",
+      "hard_case_type": "prompt_injection",
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "technology",
+              "evidence_span": "reporting dashboard"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": null,
+            "evidence_span": null
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "reporting dashboard"
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": null,
+            "evidence_span": null
+          },
+          "intake_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "workstream_count",
+            "expected": null,
+            "got": 1
+          },
+          {
+            "field": "intake_kind",
+            "expected": "enquiry",
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "out_of_taxonomy",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind",
+          "multi_party",
+          "intake_kind"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "technology",
+              "evidence_span": "reporting dashboard"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": null,
+            "evidence_span": null
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "reporting dashboard"
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": null,
+            "evidence_span": null
+          },
+          "intake_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "workstream_count",
+            "expected": null,
+            "got": 1
+          },
+          {
+            "field": "intake_kind",
+            "expected": "enquiry",
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "out_of_taxonomy",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind",
+          "multi_party",
+          "intake_kind"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0016",
+      "hard_case_type": "vendor_pitch",
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": null,
+            "evidence_span": null
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "Hi Hartwell Grey team"
+          },
+          "intake_kind": {
+            "value": "vendor_pitch",
+            "evidence_span": "we built a workflow tool and can offer 40% off if you onboard this quarter"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "multi_party",
+            "expected": null,
+            "got": false
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "out_of_taxonomy",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": null,
+            "evidence_span": null
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "Hi Hartwell Grey team"
+          },
+          "intake_kind": {
+            "value": "vendor_pitch",
+            "evidence_span": "we built a workflow tool and can offer 40% off if you onboard this quarter"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "multi_party",
+            "expected": null,
+            "got": false
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "out_of_taxonomy",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0017",
+      "hard_case_type": "job_applicant",
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": null,
+            "evidence_span": null
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": null,
+            "evidence_span": null
+          },
+          "intake_kind": {
+            "value": "job_applicant",
+            "evidence_span": "Dear hiring manager, I am a recently qualified ACA seeking an analyst role. Please find my CV attached"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "out_of_taxonomy",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind",
+          "multi_party"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": null,
+            "evidence_span": null
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "deadline_kind": {
+            "value": null,
+            "evidence_span": null
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": null,
+            "evidence_span": null
+          },
+          "intake_kind": {
+            "value": "job_applicant",
+            "evidence_span": "Dear hiring manager, I am a recently qualified ACA seeking an analyst role. Please find my CV attached"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "out_of_taxonomy",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "deadline_kind",
+          "multi_party"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0018",
+      "hard_case_type": "implied_jurisdictions",
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "tax",
+              "evidence_span": "so we stay on the right side of UK tax"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "Ireland",
+              "Singapore",
+              "UK"
+            ],
+            "evidence_span": "the Dublin office and the APAC holdco for investment-management services so we stay on the right side of UK tax"
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Need advice on charging the Dublin office and the APAC holdco for investment-management services so we stay on the right side of UK tax"
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "No year-end crunch"
+          },
+          "regulator_or_investigation": {
+            "value": false,
+            "evidence_span": "so we stay on the right side of UK tax"
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": true,
+            "evidence_span": "the Dublin office and the APAC holdco"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Need advice on charging the Dublin office and the APAC holdco for investment-management services"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "financial_services",
+            "evidence_span": "investment-management services"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": "low",
+            "evidence_span": "No year-end crunch"
+          }
+        },
+        "misses": [
+          {
+            "field": "jurisdiction_names",
+            "expected": [
+              "Ireland",
+              "Singapore"
+            ],
+            "got": [
+              "Ireland",
+              "Singapore",
+              "UK"
+            ]
+          },
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "multi_party",
+            "expected": false,
+            "got": true
+          }
+        ],
+        "route_to": "james.okonkwo@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "moderate",
+        "hours": 54,
+        "span_rejections": [
+          "entity_count"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "tax",
+              "evidence_span": "so we stay on the right side of UK tax"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "Ireland",
+              "Singapore",
+              "UK"
+            ],
+            "evidence_span": "the Dublin office and the APAC holdco for investment-management services so we stay on the right side of UK tax"
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Need advice on charging the Dublin office and the APAC holdco for investment-management services so we stay on the right side of UK tax"
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "No year-end crunch"
+          },
+          "regulator_or_investigation": {
+            "value": false,
+            "evidence_span": "so we stay on the right side of UK tax"
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": true,
+            "evidence_span": "the Dublin office and the APAC holdco"
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Need advice on charging the Dublin office and the APAC holdco for investment-management services"
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "financial_services",
+            "evidence_span": "investment-management services"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": "low",
+            "evidence_span": "No year-end crunch"
+          }
+        },
+        "misses": [
+          {
+            "field": "jurisdiction_names",
+            "expected": [
+              "Ireland",
+              "Singapore"
+            ],
+            "got": [
+              "Ireland",
+              "Singapore",
+              "UK"
+            ]
+          },
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "multi_party",
+            "expected": false,
+            "got": true
+          }
+        ],
+        "route_to": "james.okonkwo@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "moderate",
+        "hours": 54,
+        "span_rejections": [
+          "entity_count"
+        ]
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0019",
+      "hard_case_type": "relative_deadline",
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "strategy",
+              "evidence_span": "recommendation on whether we split product and commercial into two units"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK company"
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "recommendation on whether we split product and commercial into two units"
+          },
+          "deadline_kind": {
+            "value": "hard",
+            "evidence_span": "must be ready before the 30 September board"
+          },
+          "regulator_or_investigation": {
+            "value": false,
+            "evidence_span": "The chair wants a recommendation on whether we split product and commercial into two units. UK company. It must be ready before the 30 September board."
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "The chair wants a recommendation on whether we split product and commercial into two units. UK company."
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "The chair wants a recommendation on whether we split product and commercial into two units."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": "high",
+            "evidence_span": "must be ready before the 30 September board"
+          }
+        },
+        "misses": [
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "priya.shah@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "moderate",
+        "hours": 50,
+        "span_rejections": []
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [
+            {
+              "value": "strategy",
+              "evidence_span": "recommendation on whether we split product and commercial into two units"
+            }
+          ],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "UK company"
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "recommendation on whether we split product and commercial into two units"
+          },
+          "deadline_kind": {
+            "value": "hard",
+            "evidence_span": "must be ready before the 30 September board"
+          },
+          "regulator_or_investigation": {
+            "value": false,
+            "evidence_span": "The chair wants a recommendation on whether we split product and commercial into two units. UK company. It must be ready before the 30 September board."
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "The chair wants a recommendation on whether we split product and commercial into two units. UK company."
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "The chair wants a recommendation on whether we split product and commercial into two units."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": "high",
+            "evidence_span": "must be ready before the 30 September board"
+          }
+        },
+        "misses": [
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "priya.shah@hartwellgrey.example",
+        "abstained": false,
+        "abstain_reason": null,
+        "tier": "moderate",
+        "hours": 50,
+        "span_rejections": []
+      }
+    },
+    {
+      "enquiry_id": "HG-2026-0020",
+      "hard_case_type": "duplicate_matter",
+      "as_shipped": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "Same UK-only target."
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Still just contract review on the buy."
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "Still no fixed completion date."
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "Still just contract review on the buy."
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Following up: still looking at purchasing that Midlands machining business."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "industrials",
+            "evidence_span": "Midlands machining business"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "work_signals",
+            "expected": [
+              "transaction"
+            ],
+            "got": null
+          },
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "work_signals",
+          "regulator_or_investigation"
+        ]
+      },
+      "model_only": {
+        "extraction": {
+          "work_signals": [],
+          "jurisdiction_names": {
+            "value": [
+              "UK"
+            ],
+            "evidence_span": "Same UK-only target."
+          },
+          "entity_count": {
+            "value": null,
+            "evidence_span": null
+          },
+          "workstream_count": {
+            "value": 1,
+            "evidence_span": "Still just contract review on the buy."
+          },
+          "deadline_kind": {
+            "value": "none",
+            "evidence_span": "Still no fixed completion date."
+          },
+          "regulator_or_investigation": {
+            "value": null,
+            "evidence_span": null
+          },
+          "systems_change": {
+            "value": null,
+            "evidence_span": null
+          },
+          "multi_party": {
+            "value": false,
+            "evidence_span": "Still just contract review on the buy."
+          },
+          "intake_kind": {
+            "value": "enquiry",
+            "evidence_span": "Following up: still looking at purchasing that Midlands machining business."
+          },
+          "stated_company": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_industry": {
+            "value": "industrials",
+            "evidence_span": "Midlands machining business"
+          },
+          "stated_company_size": {
+            "value": null,
+            "evidence_span": null
+          },
+          "stated_urgency": {
+            "value": null,
+            "evidence_span": null
+          }
+        },
+        "misses": [
+          {
+            "field": "work_signals",
+            "expected": [
+              "transaction"
+            ],
+            "got": null
+          },
+          {
+            "field": "entity_count",
+            "expected": 1,
+            "got": null
+          },
+          {
+            "field": "regulator_or_investigation",
+            "expected": false,
+            "got": null
+          },
+          {
+            "field": "systems_change",
+            "expected": false,
+            "got": null
+          }
+        ],
+        "route_to": "intake-analyst@hartwellgrey.example",
+        "abstained": true,
+        "abstain_reason": "low_evidence",
+        "tier": null,
+        "hours": null,
+        "span_rejections": [
+          "work_signals",
+          "regulator_or_investigation"
+        ]
+      }
+    }
+  ]
+}

@@ -94,10 +94,15 @@ def route(
         )
 
     if not score_result.line_scores or score_result.low_evidence:
-        return abstain(
-            AbstainReason.LOW_EVIDENCE,
-            "ABSTAIN: low evidence (missing work signals or too many null drivers)",
-        )
+        # Say which of the three low-evidence paths fired. "Low evidence" alone sent
+        # the analyst back to the trace to work out why.
+        if not score_result.line_scores:
+            why = "no work signal could be read from the letter"
+        elif any("MATERIAL UNKNOWN" in line for line in score_result.rule_trace):
+            why = "an unknown driver could change the tier"
+        else:
+            why = f"{len(score_result.null_drivers)} unknown drivers; enquiry too sparse to triage"
+        return abstain(AbstainReason.LOW_EVIDENCE, f"ABSTAIN: low evidence ({why})")
 
     if score_result.competing_lines:
         challenger = score_result.competing_lines[0]

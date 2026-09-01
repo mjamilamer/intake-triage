@@ -10,6 +10,7 @@ from pathlib import Path
 from intake_triage.emit import format_email, sheet_row
 from intake_triage.generate import seed_to_enquiry, seed_to_extraction
 from intake_triage.pipeline import triage_from_extraction
+from intake_triage.failsafe import handle_failure
 from intake_triage.policy_loader import load_policy
 from intake_triage.schema import Enquiry, Extraction
 from intake_triage.seeds import SEEDS
@@ -126,41 +127,21 @@ def process_row(row: dict, *, use_llm: bool = False) -> dict:
     try:
         enquiry = row_to_enquiry(row)
     except Exception as exc:  # noqa: BLE001
-        return {
-            "enquiry_id": row.get("enquiry_id") or "UNKNOWN",
-            "difficulty": row.get("difficulty") or "",
-            "split": row.get("split") or "",
-            "extraction_source": "failed",
-            "error": str(exc),
-            "decision": {
-                "abstained": True,
-                "abstain_reason": "extraction_failed",
-                "service_line": None,
-                "complexity": None,
-                "estimated_hours": None,
-                "route_to": None,
-            },
-            "rule_trace": [f"PARSE FAILED: {exc}"],
-            "extraction": Extraction().model_dump(mode="json"),
-            "intake": {
-                "company_name": row.get("company_name") or "",
-                "industry": row.get("industry") or "",
-                "company_size": row.get("company_size") or "",
-                "urgency": row.get("urgency") or "",
-                "description": row.get("description") or "",
-            },
-            "email": "",
-            "sheet_row": {},
-            "output_json": {"enquiry_id": row.get("enquiry_id"), "abstained": True, "error": str(exc)},
-        }
+        # Unparseable row. The letter still reaches the analyst with an email and a
+        # JSON copy; an enquiry is never dropped because a field would not coerce.
+        subject, decision, _ = handle_failure(row, exc, policy=policy, stage="intake parse")
+        return _pack(subject, Extraction(), decision, source="failed", row=row, error=str(exc))
     try:
         extraction, source, warn = row_extraction(row, use_llm=use_llm)
         decision = triage_from_extraction(enquiry, extraction, policy)
         return _pack(enquiry, extraction, decision, source=source, row=row, error=warn)
     except Exception as exc:  # noqa: BLE001
-        extraction = Extraction()
-        decision = triage_from_extraction(enquiry, extraction, policy)
-        return _pack(enquiry, extraction, decision, source="failed", row=row, error=str(exc))
+        # Model outage, bad tool call, schema rejection. Abstain as extraction_failed
+        # rather than low_evidence: an outage and a terse letter must not look alike.
+        _, decision, _ = handle_failure(
+            row, exc, enquiry=enquiry, policy=policy, stage="extraction"
+        )
+        return _pack(enquiry, Extraction(), decision, source="failed", row=row, error=str(exc))
 
 
 def process_batch(
