@@ -1,0 +1,73 @@
+# Starting values. Assumption A15: calibrate against client history. Not derived constants.
+
+analyst_email: intake-analyst@hartwellgrey.example  # A1 fixture
+
+service_lines:
+  STRATEGY_OM:
+    base_hours: 40  # A15 starting value. Growth, operating model, org design.
+    owner: priya.shah@hartwellgrey.example  # A2
+    label: Strategy and operating model
+  MA_TRANSACTION:
+    base_hours: 80  # A15 starting value. Diligence, integration, carve-out.
+    owner: james.okonkwo@hartwellgrey.example  # A2 dual owner
+    label: M&A and transaction support
+  TAX_STRUCTURING:
+    base_hours: 30  # A15 starting value. Tax advisory, TP, entity structuring.
+    owner: james.okonkwo@hartwellgrey.example  # A2 dual owner
+    label: Tax and structuring
+  RISK_REGULATORY:
+    base_hours: 45  # A15 starting value. Regulatory change, controls, investigations.
+    owner: elena.rossi@hartwellgrey.example  # A2
+    label: Risk, regulatory and compliance
+  TECH_DATA:
+    base_hours: 60  # A15 starting value. Systems, data platforms, digital delivery.
+    owner: david.chen@hartwellgrey.example  # A2
+    label: Technology and data
+
+work_signal_map:
+  strategy: STRATEGY_OM
+  transaction: MA_TRANSACTION
+  tax: TAX_STRUCTURING
+  regulatory: RISK_REGULATORY
+  technology: TECH_DATA
+
+additives:
+  extra_jurisdiction_hours: 8  # A15. Per jurisdiction beyond the first.
+  extra_entity_hours: 4  # A15. Per legal entity beyond the first.
+  extra_workstream_hours: 6  # A15. Per workstream beyond the first.
+  regulator_or_investigation_hours: 12  # A15
+  systems_change_hours: 10  # A15
+  multi_party_hours: 8  # A15
+
+multipliers:
+  hard_deadline: 1.25  # A15
+  company_size:
+    sme: 1.0  # A5/A15. Under 250 staff.
+    mid: 1.1  # A5/A15. 250-2000 staff.
+    enterprise: 1.2  # A5/A15. Over 2000 staff.
+
+tiers:
+  # 40 is inclusive on moderate. 80 is inclusive on complex.
+  simple_max_exclusive: 40  # A15. hours < 40
+  moderate_max_exclusive: 80  # A15. 40 <= hours < 80
+  # hours >= 80 is complex
+
+abstention:
+  competing_hours_pct: 0.15  # A15. Challenger within 15% of winner.
+  low_evidence_null_threshold: 4  # A15. Of 8 driver slots.
+  injection_phrases:
+    - "ignore previous instructions"
+    - "route to the managing partner"
+  ood_intake_kinds:
+    - vendor_pitch
+    - job_applicant
+
+leads:
+  priya.shah@hartwellgrey.example:
+    name: Priya Shah
+  james.okonkwo@hartwellgrey.example:
+    name: James Okonkwo
+  elena.rossi@hartwellgrey.example:
+    name: Elena Rossi
+  david.chen@hartwellgrey.example:
+    name: David Chen

@@ -1,0 +1,20 @@
+To: james.okonkwo@hartwellgrey.example
+Subject: Intake HG-2026-0001 / Northbridge Payroll Ltd
+
+Service line: TAX_STRUCTURING
+Complexity: simple
+Estimated hours: 30
+Route to: James Okonkwo (james.okonkwo@hartwellgrey.example)
+
+Rule trace:
+- Base: TAX_STRUCTURING 30h
+- Result: 30h -> SIMPLE
+- ROUTE: TAX_STRUCTURING -> james.okonkwo@hartwellgrey.example
+
+Original enquiry
+Company: Northbridge Payroll Ltd
+Industry: professional_services
+Size: sme
+Urgency (form field, not complexity): normal
+
+We run payroll for about forty SME clients from Manchester. Need a review of how we recharge the group so we do not create a UK corporation-tax issue. One UK company only. No filing date hanging over us.
