@@ -1,56 +1,63 @@
 # ARCHITECTURE
 
-The brief does not specify the current stack. Email plus a Google Sheet plus JSONL is a working scenario (A7, A8) so the prototype has somewhere to write. If they already have a CRM or M365, only the emit adapters change. Score and route do not.
+Assumption, not in the brief: the emit path (email, a Google Sheet, a JSONL log) is a working scenario so the prototype has somewhere to write. The brief does not name a stack. If the firm already has a CRM or M365, only the adapters change.
 
 ## Data flow
 
 ```
-web form (A6 Typeform is a fixture)
-  -> normalise Enquiry
-  -> extract.py  (one LLM call, facts + evidence spans)
-  -> score.py    (policy.yaml, no LLM)
-  -> route.py    (policy.yaml, no LLM)
-  -> email to lead, or analyst if abstain
-  -> append spreadsheet row (empty correction column)
+web form (Typeform is a fixture; assumption, not in the brief)
+  -> normalise to Enquiry
+  -> extract.py   one LLM call, forced tool use, facts + verbatim evidence spans
+  -> validate     any span not found in the source is rejected and the value nulled
+  -> score.py     policy.yaml, no LLM
+  -> route.py     policy.yaml, no LLM
+  -> email to the lead, or to the analyst on abstain
+  -> append spreadsheet row with an empty correction column
   -> append JSONL decision log
 ```
 
-The model reads. The policy decides. The model does not emit service_line, complexity, hours, or route_to.
+The boundary is the design. The model returns only observable facts: work signals, jurisdiction names, entity count, workstream count, deadline kind, regulator involvement, systems change, multi-party, and what kind of message this is. It cannot return `service_line`, `complexity`, `estimated_hours`, or `route_to`. Those four are the outputs a partner may have to justify to a client, so they are computed from a file that partner can read.
+
+## Why evidence spans
+
+Every extracted field carries a verbatim quote from the enquiry, and a span that is not a substring of the source is dropped along with its value. This does three things: it turns hallucinated fields into nulls instead of confident errors, it makes the routing email self-explaining ("complex because: two jurisdictions, hard deadline, regulator involved, quoting these phrases"), and it gives an operational metric, span rejection rate, that moves before accuracy visibly degrades.
+
+Null means the text does not say. Null is not zero and not false. A missing entity count is not one entity.
+
+## Untrusted input
+
+The enquiry is a public web form, so the description is hostile by default. Three layers: the prompt states that instruction-like text inside the enquiry is data; the model has no tool that can route or send, so the worst case is a wrong fact rather than a wrong action; and `policy.yaml` carries injection phrases that force an abstention to the analyst. Seed HG-2026-0015 tests exactly this and abstains. Vendor pitches and job applications are classified and abstained as out-of-taxonomy rather than force-fit to a service line.
 
 ## Intake schema
 
-The PDF says each enquiry includes industry, company size, and urgency. Treating those as optional picklists is assumption A5. Free text stays. You cannot make a prospect describe their problem in structured form, and you would not want to. Every added required field costs conversions. Fixing intake makes triage more reliable. It is not a replacement for the triage system the brief asked for.
+Assumption, not in the brief: industry, company size, and urgency are optional picklists. Free text stays. You cannot make a prospect describe their problem in structured form and you would not want to. Better intake makes triage more reliable, but it is not a substitute for the triage system the brief asked for.
 
-## Output surfaces (greenfield, A4/A8)
+## Output surfaces
 
-1. Structured email to the team lead: service line, complexity, hours, rule trace with evidence phrases, original enquiry below. Abstentions go to the analyst with two candidates. A one-word reply captures the correction.
-2. Shared spreadsheet as the operational ledger, append-only, empty correction column. Assumption A7 names it Intake 2026 on Google Sheets. That name is a fixture.
-3. Append-only JSONL decision log. Flat, typed, stable field names. When they buy a CRM they import structured history instead of starting empty.
+1. **Structured email to the lead.** Service line, complexity, hours, the rule trace with evidence phrases, the original enquiry underneath. Abstentions go to the analyst with the two candidate lines and both hour estimates, so the human decision is a one-word reply.
+2. **Shared spreadsheet as operational ledger.** Append-only, with an empty correction column. That column is the training signal for `policy.yaml`, gathered as a byproduct of work people already do.
+3. **Append-only JSONL decision log.** Flat, typed, stable field names. When they buy a CRM they import structured history instead of starting empty.
 
-I did not build a UI or a queue app. A four-lead firm cannot maintain one. It would become an orphan. Building it would contradict the argument this document is making.
+No UI and no queue app. A four-lead firm cannot maintain one, and the daily surface for a team lead is already their inbox.
 
-Graduation trigger for a CRM: pipeline visibility, multi-touch attribution, or more than two people editing the same record concurrently.
+Graduation trigger for a real CRM: pipeline visibility, multi-touch attribution, or more than two people editing one record at a time.
 
 ## Model and provider
 
-Hosted API, mid-tier, forced tool choice, pinned version (`claude-sonnet-4-6` in extract.py). Routed through their existing cloud so this adds no vendor (A11). Thin provider interface so Azure OpenAI or Vertex is a config change. Local small-model fallback if residency forbids external calls: lower extraction quality plus hosting nobody there can maintain. Name that cost rather than bury it.
+Hosted mid-tier API, temperature 0, forced tool choice, version pinned in `extract.py` (`claude-sonnet-4-6`) and never a latest alias. Routed through whatever cloud they already hold, so this adds no vendor.
 
-## What I did not build
+What is in the prototype: one Anthropic call at temperature 0, schema generated from the Pydantic model, then span validation. What is not: a provider-swap interface, extra samples at 0.3, or a live extraction eval. Those are the next hour of work if a key is present, not a claim about this repo.
 
-- Agent loop: one extraction call is the probabilistic step.
-- Vector store: there is no corpus.
-- Fine-tuning: ~2,600 examples/year, changing taxonomy, and it would destroy evidence-span behaviour.
-- Orchestration framework: one deterministic path.
-- Custom UI: see A8.
+If data residency forbids an external call, the fallback is a local small model. That costs extraction quality and adds hosting. Assumption, not in the brief: Hartwell Grey is ~90 people. Name that trade rather than bury it.
 
 ## Day-one instrumentation
 
-Baseline before deploy: time from submission to assignment, analyst hours, known misroutes.
+Baseline these before deploying anything: submission-to-assignment time, analyst hours, and known misroutes. Without a pre-deploy baseline there is no honest after.
 
-Decision log fields: enquiry_id, drivers plus spans, rule_trace, route, abstained, model/prompt versions, samples, latency, tokens, decided_at.
+Decision log fields: `enquiry_id`, every driver with its span, `rule_trace`, `route_to`, `abstained` with reason, model and prompt version, sample count, latency, tokens, `decided_at`. Version fields are on every row so a metric shift can be attributed to a prompt change rather than argued about.
 
-Business metrics: reroute-after-assignment by class (free and truest error signal), submission-to-assignment time, analyst hours reclaimed, escalation volume trend, evidence-span rejection rate, unparseable outputs, version-pin changes.
+Monitoring and failure behaviour: see [PRODUCTION_NOTES.md](PRODUCTION_NOTES.md).
 
 ## Deployment posture
 
-Two weeks shadow mode. Route nothing. Measure agreement. Adjudicate disagreements. That produces the gold set and the thresholds at once and costs the business nothing.
+Two weeks of shadow mode. Route nothing. Score every live enquiry, let the analyst work normally, and compare. Disagreements get adjudicated. That produces the gold set and the calibrated thresholds at the same time, and it costs the business nothing if the system is wrong.
