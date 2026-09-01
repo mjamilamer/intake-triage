@@ -1,3 +1,5 @@
+"""Oracle eval against the 20 locked seeds. Writes EVAL_RESULTS.md. Not extraction accuracy."""
+
 from __future__ import annotations
 
 from collections import Counter
@@ -13,6 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def run_eval() -> str:
+    """Replay the 20 locked seeds through score/route. Writes EVAL_RESULTS.md."""
     policy = load_policy()
     write_preview()
     decisions = []
@@ -65,10 +68,12 @@ def run_eval() -> str:
         "",
         "Labels are synthetic and derived from our own scoring function. This measures internal consistency of score/route against locked seeds, not truth. First production deliverable is an adjudicated gold set from real historical enquiries (assumption A13).",
         "",
-        "## 1. Per-driver extraction accuracy",
-        "NOT MEASURED. This run used authored driver vectors, not model output, so the deterministic layer could be tested in isolation. No ANTHROPIC_API_KEY was set when this file was generated, so there is no extraction accuracy number here and I have not estimated one.",
+        "`data/enquiries_150.csv` is intake-only free text (no extraction JSON, no expected labels). `data/call_batch.csv` holds 50 of those rows (15 easy / 20 medium / 15 hard) for a live CLI run with `--llm`. Offline numbers below are still the 20 locked seeds in `seeds.py`.",
         "",
-        "What I would run on Monday, in order. First, `extract_with_llm` against all 20 preview descriptions at temperature 0, scoring each of the 9 driver slots three ways: value correct, value correct with a valid evidence span, and span rejected by the substring check. Per-driver accuracy matters more than an aggregate, because a null `entity_count` costs 4 hours of estimate while a wrong `work_signals` costs a misroute to another human. Second, re-run at temperature 0.3 with 3 samples to get a disagreement rate per driver, which is the honest input to the abstention threshold rather than a guessed constant. The current threshold is 1 null scoring driver (A15). Third, feed the extracted vectors, not the authored ones, through score and route to get end-to-end tier and routing accuracy, which is the only number in this document that would mean anything to a partner. That is roughly 80 calls and about an hour of work; the reason it is not here is that the key was absent, not that the plan is unclear.",
+        "## 1. Per-driver extraction accuracy",
+        "NOT MEASURED as a published number. The figures below use authored driver vectors so the deterministic layer can be tested in isolation. Live extract has been run in the interview journal. That is a demo of the two-layer split, not a scored gold set, so there is no extraction MAE in this file.",
+        "",
+        "What I would run on Monday, in order. First, `extract_with_llm` against all 20 preview descriptions on the pinned Sonnet snapshot, scoring each driver three ways: value correct, value correct with a valid evidence span, and span rejected by the substring check. Per-driver accuracy matters more than an aggregate, because a null `entity_count` costs 4 hours of estimate while a wrong `work_signals` costs a misroute to another human. Forced tool choice is the constraint; the current SDK does not take a temperature knob. Second, feed the extracted vectors, not the authored ones, through score and route to get end-to-end tier and routing accuracy, which is the only number in this document that would mean anything to a partner. The current abstention threshold is 1 null scoring driver (A15). That is about an hour of work. The reason it is not here is that I will not invent an accuracy number from a handful of journal clicks.",
         "",
         "## 2. Effort estimate MAE in hours",
         f"MAE on non-abstain locked seeds: {mae:.2f}h (should be 0.00 if score.py matches preview_spec).",

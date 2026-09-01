@@ -1,3 +1,5 @@
+"""Deterministic path used by tests, the notebook, and shadow mode."""
+
 from __future__ import annotations
 
 from intake_triage.policy_loader import load_policy

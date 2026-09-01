@@ -1,3 +1,5 @@
+"""Hours, tier, and competing lines. No LLM. Null is omitted, not treated as zero."""
+
 from __future__ import annotations
 
 from decimal import ROUND_HALF_UP, Decimal
@@ -18,6 +20,7 @@ from intake_triage.schema import (
 
 
 def round_half_up(value: float) -> int:
+    """Banker's-round-away-from-even: 0.5 goes up. Matches the written formula."""
     return int(Decimal(str(value)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
@@ -34,6 +37,7 @@ def _span(driver: Driver | None) -> str | None:
 
 
 def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) -> ScoreResult:
+    """Turn evidenced facts into provisional hours. A committed tier needs every scoring driver."""
     policy = policy or load_policy()
     trace: list[str] = []
     null_drivers: list[str] = []
@@ -118,7 +122,22 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
     if multi_on:
         additive += int(adds["multi_party_hours"])
 
-    size_mult = float(policy["multipliers"]["company_size"][enquiry.company_size.value])
+    size = enquiry.company_size
+    if size is None:
+        stated_size = extraction.stated_company_size
+        if _driver_null(stated_size):
+            null_drivers.append("company_size")
+            trace.append("NULL: company size not on the form and not determinable from text")
+            size_mult = 1.0
+        else:
+            size = CompanySize(stated_size.value)
+            size_mult = float(policy["multipliers"]["company_size"][size.value])
+            if stated_size.evidence_span:
+                trace.append(
+                    f"SIZE FROM TEXT: {size.value} (evidence: '{stated_size.evidence_span}')"
+                )
+    else:
+        size_mult = float(policy["multipliers"]["company_size"][size.value])
 
     threshold = int(policy["abstention"]["low_evidence_null_threshold"])
     low_evidence = len(null_drivers) >= threshold or not signals
@@ -177,8 +196,8 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
                 f"x{policy['multipliers']['hard_deadline']}: hard deadline"
                 + (f" (evidence: '{span}')" if span else "")
             )
-        if enquiry.company_size != CompanySize.SME:
-            line_trace.append(f"x{size_mult}: company size {enquiry.company_size.value}")
+        if size is not None and size != CompanySize.SME:
+            line_trace.append(f"x{size_mult}: company size {size.value}")
         line_trace.append(f"Result: {hours}h -> {tier_for(hours, policy).value.upper()}")
         line_scores.append(
             LineScore(
@@ -229,6 +248,7 @@ def score(extraction: Extraction, enquiry: Enquiry, policy: dict | None = None) 
 
 
 def tier_for(hours: int, policy: dict) -> ComplexityTier:
+    """Simple < 40. Moderate 40 inclusive to < 80. Complex >= 80."""
     simple_max = int(policy["tiers"]["simple_max_exclusive"])
     moderate_max = int(policy["tiers"]["moderate_max_exclusive"])
     # 40 is inclusive on moderate. 80 is inclusive on complex.

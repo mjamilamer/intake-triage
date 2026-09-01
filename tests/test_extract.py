@@ -1,3 +1,5 @@
+"""Span validation, Sonnet pin, and Haiku Driver coerce."""
+
 from __future__ import annotations
 
 from copy import deepcopy
@@ -39,6 +41,77 @@ def test_missing_span_drops_value():
     assert checked.systems_change.value is None
     assert "work_signals" in rejected
     assert "systems_change" in rejected
+
+
+def test_pinned_model_is_sonnet():
+    from intake_triage.extract import PINNED_MODEL
+
+    assert PINNED_MODEL == "claude-sonnet-4-6"
+    assert "latest" not in PINNED_MODEL
+
+
+def test_extras_spans_are_in_the_letter():
+    from intake_triage.extract import validate_evidence_spans
+    from intake_triage.generate import seed_to_extraction
+    from intake_triage.journal_extras import JOURNAL_EXTRAS
+
+    for rec in JOURNAL_EXTRAS:
+        _, rejected = validate_evidence_spans(seed_to_extraction(rec), rec["description"])
+        assert rejected == [], f"{rec['enquiry_id']} rejected {rejected}"
+        assert len(rec["description"]) > 40
+
+
+def test_long_prompt_is_actually_long():
+    from intake_triage.journal_extras import JOURNAL_EXTRAS, LONG_IDS
+
+    for rec in JOURNAL_EXTRAS:
+        if rec["enquiry_id"] in LONG_IDS:
+            assert len(rec["description"]) > 900
+
+
+def test_extract_create_kwargs_omit_temperature():
+    import inspect
+
+    from intake_triage.extract import extract_with_llm
+
+    source = inspect.getsource(extract_with_llm)
+    assert "temperature=" not in source
+
+
+def test_coerce_bare_haiku_payload_from_0214():
+    from intake_triage.extract import coerce_extraction_payload, validate_evidence_spans
+    from intake_triage.schema import WorkSignal
+
+    source = (
+        "Writing for Harbor & Pine, a consumer business with about 180 people. UK only. This is "
+        "not urgent. Board asked whether brand and operations should sit in separate teams. Want "
+        "a view on the operating model over the next quarter. One entity. No systems programme. "
+        "Not a police or fraud matter. Nobody else is in the room."
+    )
+    raw = {
+        "work_signals": [{"value": "strategy", "evidence_span": "view on the operating model"}],
+        "jurisdiction_names": '["United Kingdom"]',
+        "entity_count": "1",
+        "workstream_count": "1",
+        "deadline_kind": "soft",
+        "regulator_or_investigation": "false",
+        "systems_change": "false",
+        "multi_party": "false",
+        "intake_kind": "enquiry",
+        "stated_company": "Harbor & Pine",
+        "stated_industry": "consumer",
+        "stated_company_size": "sme",
+        "stated_urgency": "low",
+    }
+    extraction = Extraction.model_validate(coerce_extraction_payload(raw, source))
+    checked, rejected = validate_evidence_spans(extraction, source)
+    assert checked.work_signals[0].value == WorkSignal.STRATEGY
+    assert checked.stated_company.value == "Harbor & Pine"
+    assert checked.jurisdiction_names.value == ["UK"]
+    assert checked.entity_count.value == 1
+    assert checked.systems_change.value is False
+    assert "jurisdiction_names" not in rejected
+    assert checked.stated_company_size.value == "sme"
 
 
 def test_valid_span_kept():

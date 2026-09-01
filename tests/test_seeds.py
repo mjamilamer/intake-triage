@@ -1,3 +1,5 @@
+"""Preview roundtrip for the 20 locked seeds."""
+
 from __future__ import annotations
 
 from intake_triage.generate import seed_to_enquiry, seed_to_extraction

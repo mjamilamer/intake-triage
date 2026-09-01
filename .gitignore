@@ -13,3 +13,5 @@ dist/
 build/
 *.log
 .DS_Store
+# Live decisions, journal LLM cache, batch JSONL. Never commit.
+data/out/

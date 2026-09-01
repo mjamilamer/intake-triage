@@ -1,3 +1,5 @@
+"""Map (service line, tier) to a lead, or abstain. Order matches the journal gates."""
+
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -32,6 +34,7 @@ def route(
     tokens_in: int | None = None,
     tokens_out: int | None = None,
 ) -> TriageDecision:
+    """Empty / injection / vendor / job, then cross-lead, then low-evidence, then commit."""
     policy = policy or load_policy()
     decided_at = datetime.now(timezone.utc)
     trace = list(score_result.rule_trace)
@@ -79,12 +82,6 @@ def route(
             f"ABSTAIN: intake_kind={kind.value} is out of taxonomy",
         )
 
-    if not score_result.line_scores or score_result.low_evidence:
-        return abstain(
-            AbstainReason.LOW_EVIDENCE,
-            "ABSTAIN: low evidence (missing work signals or too many null drivers)",
-        )
-
     owners = {item.owner for item in score_result.line_scores}
     if len(score_result.line_scores) >= 2 and len(owners) > 1:
         names = ", ".join(
@@ -94,6 +91,12 @@ def route(
         return abstain(
             AbstainReason.CROSS_LEAD_CONFLICT,
             f"ABSTAIN: cross-lead conflict ({names})",
+        )
+
+    if not score_result.line_scores or score_result.low_evidence:
+        return abstain(
+            AbstainReason.LOW_EVIDENCE,
+            "ABSTAIN: low evidence (missing work signals or too many null drivers)",
         )
 
     if score_result.competing_lines:
@@ -137,6 +140,7 @@ def route(
 
 
 def decide(enquiry: Enquiry, extraction: Extraction, policy: dict | None = None) -> TriageDecision:
+    """Score then route. The only deterministic entry point tests and batch should call."""
     policy = policy or load_policy()
     scored = score_extraction(extraction, enquiry, policy)
     return route(scored, enquiry, extraction, policy)

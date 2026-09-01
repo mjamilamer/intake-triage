@@ -656,16 +656,16 @@
         "evidence_span": "one entity"
       },
       "workstream_count": {
-        "value": 1,
-        "evidence_span": null
+        "value": 2,
+        "evidence_span": "in the same letter"
       },
       "deadline_kind": {
         "value": "none",
         "evidence_span": null
       },
       "regulator_or_investigation": {
-        "value": false,
-        "evidence_span": null
+        "value": true,
+        "evidence_span": "PRA thematic review"
       },
       "systems_change": {
         "value": false,

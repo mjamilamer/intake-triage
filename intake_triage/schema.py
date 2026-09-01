@@ -1,3 +1,5 @@
+"""Enquiry and Extraction types. Driver = value plus evidence span, both nullable."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -85,6 +87,7 @@ class Driver(BaseModel, Generic[T]):
 
 
 class Extraction(BaseModel):
+    """Observable facts only. The model must not fill service_line, complexity, hours, or route."""
     work_signals: list[Driver[WorkSignal]] = Field(default_factory=list)
     jurisdiction_names: Driver[list[str]] = Field(default_factory=Driver)
     entity_count: Driver[int] = Field(default_factory=Driver)
@@ -94,17 +97,22 @@ class Extraction(BaseModel):
     systems_change: Driver[bool] = Field(default_factory=Driver)
     multi_party: Driver[bool] = Field(default_factory=Driver)
     intake_kind: Driver[IntakeKind] = Field(default_factory=Driver)
+    stated_company: Driver[str] = Field(default_factory=Driver)
+    stated_industry: Driver[Industry] = Field(default_factory=Driver)
+    stated_company_size: Driver[CompanySize] = Field(default_factory=Driver)
+    stated_urgency: Driver[Urgency] = Field(default_factory=Driver)
 
 
 class Enquiry(BaseModel):
+    """One form submission. Company, industry, size, and urgency may be null."""
     enquiry_id: str
     submitted_at: datetime
     contact_name: str | None = None
     contact_email: str | None = None
-    company_name: str
-    industry: Industry
-    company_size: CompanySize
-    urgency: Urgency
+    company_name: str | None = None
+    industry: Industry | None = None
+    company_size: CompanySize | None = None
+    urgency: Urgency | None = None
     description: str
 
 
@@ -127,6 +135,7 @@ class ScoreResult(BaseModel):
 
 
 class TriageDecision(BaseModel):
+    """What the policy committed. Hours and route are None on abstention."""
     enquiry_id: str
     service_line: ServiceLine | None = None
     complexity: ComplexityTier | None = None

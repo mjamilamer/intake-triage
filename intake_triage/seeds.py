@@ -1,3 +1,5 @@
+"""Locked 20 reverse-specified synthetics. Authored drivers first, then the letter."""
+
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -390,9 +392,9 @@ add(
         ],
         "jurisdiction_names": _d(["UK"], "UK mutual"),
         "entity_count": _d(1, "one entity"),
-        "workstream_count": _d(1, None),
+        "workstream_count": _d(2, "in the same letter"),
         "deadline_kind": _d("none", None),
-        "regulator_or_investigation": _d(False, None),
+        "regulator_or_investigation": _d(True, "PRA thematic review"),
         "systems_change": _d(False, "No systems programme"),
         "multi_party": _d(False, None),
         "intake_kind": _d("enquiry", "We need a new operating model"),

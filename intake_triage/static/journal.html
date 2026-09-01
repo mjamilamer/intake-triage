@@ -15,7 +15,7 @@
       --rule: #d4cec0;
       --route: #1c4b3a;
       --abstain: #8b1e1e;
-      --pass: #3d5a45;
+      --chip: #e7e1d2;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; background: var(--paper); color: var(--ink); }
@@ -27,33 +27,102 @@
     }
     .frame {
       display: grid;
-      grid-template-columns: 220px minmax(0, 1fr);
+      grid-template-columns: 280px minmax(0, 1fr);
       min-height: 100vh;
     }
     nav {
       border-right: 1px solid var(--rule);
-      padding: 28px 20px;
+      padding: 24px 16px 32px;
       position: sticky;
       top: 0;
       height: 100vh;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
-    nav p.kicker {
+    .kicker {
       font-family: "IBM Plex Mono", ui-monospace, monospace;
       font-size: 11px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--mute);
-      margin: 0 0 28px;
+      margin: 0;
     }
-    nav ol { list-style: none; padding: 0; margin: 0; }
-    nav li { margin: 0 0 14px; }
-    nav a {
+    .modes, .row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .modes button, .row button, .finder input, button.ghost, button.solid {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+    }
+    .modes button, .row button, button.ghost {
+      background: transparent;
       color: var(--ink);
-      text-decoration: none;
-      font-size: 15px;
+      border: 1px solid var(--rule);
+      padding: 7px 10px;
+      cursor: pointer;
     }
-    nav a:hover { border-bottom: 1px solid var(--ink); }
-    main { padding: 36px 56px 80px; max-width: 860px; }
+    .modes button.on, .row button.on {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+    button.solid {
+      background: var(--ink);
+      color: var(--paper);
+      border: 0;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+    button.solid:disabled { opacity: 0.4; cursor: not-allowed; }
+    button.ghost { cursor: pointer; }
+    .finder input {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--ink);
+      background: transparent;
+      padding: 6px 0;
+      color: var(--ink);
+    }
+    .finder input:focus { outline: none; }
+    .llm-box {
+      border-top: 1px solid var(--rule);
+      padding-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .llm-box p { margin: 0; font-size: 13px; color: var(--mute); }
+    .llm-box.ready p { color: var(--route); }
+    .llm-box input[type="password"] {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      border: 0;
+      border-bottom: 1px solid var(--rule);
+      background: transparent;
+      padding: 6px 0;
+    }
+    .case-list { display: flex; flex-direction: column; }
+    .case {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 0;
+      border-top: 1px solid var(--rule);
+      padding: 10px 4px;
+      cursor: pointer;
+      color: var(--ink);
+      font-family: Newsreader, Georgia, serif;
+    }
+    .case:hover { background: var(--chip); }
+    .case.on { background: var(--ink); color: var(--paper); }
+    .case .id { font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+    .case .co { display: block; font-size: 16px; margin-top: 2px; }
+    .case .why { display: block; font-size: 13px; color: var(--mute); }
+    .case.on .why { color: #cfc6b4; }
+    .case.seen { opacity: 0.5; }
+    main { padding: 36px 40px 80px; max-width: 1320px; min-width: 0; }
     header.mast {
       display: flex;
       justify-content: space-between;
@@ -61,61 +130,28 @@
       align-items: baseline;
       border-bottom: 1px solid var(--ink);
       padding-bottom: 16px;
-      margin-bottom: 28px;
+      margin-bottom: 20px;
     }
     h1 { font-size: 26px; font-weight: 600; margin: 0; letter-spacing: -0.02em; }
-    .note { font-size: 13px; color: var(--mute); max-width: 32ch; text-align: right; }
-    .controls {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin: 0 0 20px;
-      flex-wrap: wrap;
-    }
-    select, button, label.llm {
-      font-family: "IBM Plex Mono", ui-monospace, monospace;
-      font-size: 12px;
-    }
-    select {
-      flex: 1;
-      min-width: 280px;
-      background: transparent;
-      border: 0;
-      border-bottom: 1px solid var(--ink);
-      padding: 8px 0;
-      color: var(--ink);
-    }
-    button {
-      background: var(--ink);
-      color: var(--paper);
-      border: 0;
-      padding: 8px 14px;
-      cursor: pointer;
-    }
-    button:hover { opacity: 0.85; }
-    label.llm { color: var(--mute); display: flex; gap: 8px; align-items: center; }
+    .note { font-size: 13px; color: var(--mute); max-width: 36ch; text-align: right; }
+    .controls { display: flex; gap: 12px; align-items: center; margin: 0 0 20px; flex-wrap: wrap; }
+    .now { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--mute); margin-right: auto; }
     .decision {
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 16px;
-      align-items: start;
-      margin: 0 0 28px;
       padding: 16px 0 20px;
       border-top: 1px solid var(--ink);
       border-bottom: 1px solid var(--rule);
+      margin-bottom: 28px;
     }
-    .decision .status {
-      font-size: 34px;
-      line-height: 1.1;
-      font-weight: 600;
-      letter-spacing: -0.03em;
-    }
+    .decision .status { font-size: 32px; font-weight: 600; letter-spacing: -0.03em; }
     .decision.routed .status { color: var(--route); }
     .decision.held .status { color: var(--abstain); }
     .decision dl { margin: 0; text-align: right; font-family: "IBM Plex Mono", monospace; font-size: 12px; }
     .decision dt { color: var(--mute); }
     .decision dd { margin: 0 0 8px; }
-    article.entry { margin: 0 0 48px; }
+    article.entry { margin: 0 0 40px; }
     article.entry h2 {
       font-family: "IBM Plex Mono", monospace;
       font-size: 11px;
@@ -125,20 +161,9 @@
       margin: 0 0 12px;
       font-weight: 500;
     }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 18px 28px;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 12px;
-      margin-bottom: 16px;
-    }
+    .meta { display: flex; flex-wrap: wrap; gap: 18px 28px; font-family: "IBM Plex Mono", monospace; font-size: 12px; margin-bottom: 16px; }
     .meta span { color: var(--mute); }
-    .prose {
-      font-size: 20px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-    }
+    .prose { font-size: 20px; line-height: 1.5; white-space: pre-wrap; }
     pre.json {
       font-family: "IBM Plex Mono", monospace;
       font-size: 12px;
@@ -146,50 +171,58 @@
       background: #ebe6d8;
       padding: 16px 18px;
       overflow: auto;
-      max-height: 360px;
+      max-height: 420px;
       margin: 0;
       white-space: pre-wrap;
     }
-    .source {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 11px;
-      color: var(--mute);
-      margin: 0 0 8px;
-    }
-    .gates { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
-    details.gate {
-      border-bottom: 1px solid var(--rule);
-      padding: 10px 0;
-    }
+    .compare pre.json { max-height: 520px; }
+    .source { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--mute); margin: 0 0 8px; }
+    .gates { border-top: 1px solid var(--rule); }
+    details.gate { border-bottom: 1px solid var(--rule); padding: 10px 0; }
     details.gate summary {
       cursor: pointer;
       list-style: none;
       display: grid;
-      grid-template-columns: 92px 1fr;
+      grid-template-columns: 1fr 110px;
       gap: 12px;
-      font-size: 16px;
+      align-items: baseline;
     }
     details.gate summary::-webkit-details-marker { display: none; }
-    .st { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
-    .st.passed { color: var(--pass); }
+    .st { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; text-align: right; }
+    .st.passed { color: var(--route); }
     .st.fired { color: var(--abstain); }
     .st.not_reached { color: var(--mute); }
     .how { font-size: 15px; color: var(--mute); margin: 10px 0 0 104px; }
-    .paths { display: grid; gap: 0; }
-    .path {
-      display: grid;
-      grid-template-columns: 120px 1fr;
-      gap: 16px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--rule);
-      font-size: 16px;
-    }
-    .path b { font-weight: 600; }
     .err { color: var(--abstain); font-size: 14px; margin: 0 0 12px; }
-    @media (max-width: 820px) {
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--ink); }
+    .compare > div { min-width: 0; padding: 18px 20px 8px 0; }
+    .compare > div + div { border-left: 1px solid var(--rule); padding-left: 20px; padding-right: 0; }
+    .compare h3 {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mute);
+      font-weight: 500;
+      margin: 0 0 8px;
+    }
+    .compare .source { margin: 0 0 10px; }
+    .compare .mail-kicker {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mute);
+      margin: 16px 0 8px;
+    }
+    .hidden { display: none !important; }
+    .wait { color: var(--mute); font-size: 16px; }
+    @media (max-width: 900px) {
       .frame { grid-template-columns: 1fr; }
-      nav { height: auto; position: relative; border-right: 0; border-bottom: 1px solid var(--rule); }
+      nav { height: auto; position: relative; max-height: 46vh; border-right: 0; border-bottom: 1px solid var(--rule); }
       main { padding: 24px 20px 60px; }
+      .compare { grid-template-columns: 1fr; }
+      .compare > div + div { border-left: 0; border-top: 1px solid var(--rule); padding-left: 0; }
       .decision { grid-template-columns: 1fr; }
       .decision dl { text-align: left; }
     }
@@ -199,137 +232,368 @@
   <div class="frame">
     <nav>
       <p class="kicker">Triage journal</p>
-      <ol>
-        <li><a href="#intake">01  Intake</a></li>
-        <li><a href="#extract">02  LLM JSON</a></li>
-        <li><a href="#gates">03  Gates</a></li>
-        <li><a href="#output">04  Output</a></li>
-      </ol>
+      <div class="modes" id="modes">
+        <button type="button" data-mode="interview">Interview</button>
+        <button type="button" data-mode="test">Test</button>
+        <button type="button" data-mode="browse">Browse</button>
+      </div>
+      <div class="row hidden" id="browse-row">
+        <button type="button" data-browse="call">Call 50</button>
+        <button type="button" data-browse="all">All 150</button>
+      </div>
+      <div class="finder">
+        <input id="q" type="search" placeholder="Search company or id" autocomplete="off" />
+      </div>
+      <div class="row">
+        <button type="button" class="ghost" id="clear">Clear</button>
+        <button type="button" class="ghost" id="next">Next unrun</button>
+      </div>
+      <div class="llm-box" id="llm-box">
+        <p id="llm-msg">Checking API key…</p>
+        <input id="key" type="password" placeholder="Paste ANTHROPIC_API_KEY" autocomplete="off" />
+        <button type="button" class="ghost" id="save-key">Save key for this session</button>
+      </div>
+      <div class="case-list" id="cases"></div>
     </nav>
     <main>
       <header class="mast">
-        <h1>One enquiry, four pages.</h1>
-        <p class="note">Interview walkthrough. Production is email, a spreadsheet, and a JSONL log. This page is not that product.</p>
+        <h1 id="title">Interview</h1>
+        <p class="note" id="blurb">Left is deterministic gold. Right is the live extract. Hard and very-hard cases are in the list.</p>
       </header>
       <div class="controls">
-        <select id="seed"></select>
-        <label class="llm"><input type="checkbox" id="llm" /> Live LLM if key present</label>
-        <button type="button" id="run">Run</button>
+        <span class="now" id="now">Pick a case.</span>
+        <button type="button" class="solid" id="run">Compare new</button>
       </div>
       <p class="err" id="err" hidden></p>
-      <section class="decision" id="banner">
-        <div class="status" id="banner-status">Select an enquiry.</div>
+
+      <article class="entry" id="intake">
+        <h2>Intake</h2>
+        <div class="meta" id="intake-meta"></div>
+        <div class="prose" id="intake-text">Pick a case on the left. Then run live.</div>
+      </article>
+
+      <section class="decision hidden" id="banner">
+        <div class="status" id="banner-status"></div>
         <dl id="banner-meta"></dl>
       </section>
 
-      <article class="entry" id="intake">
-        <h2>01  Intake: free text as submitted</h2>
-        <div class="meta" id="intake-meta"></div>
-        <div class="prose" id="intake-text"></div>
+      <article class="entry hidden" id="live-wrap">
+        <h2>Live extract</h2>
+        <p class="source" id="live-label"></p>
+        <pre class="json" id="live-json"></pre>
       </article>
 
-      <article class="entry" id="extract">
-        <h2>02  Restructuring: facts the model is allowed to emit</h2>
-        <p class="source" id="extract-source"></p>
-        <pre class="json" id="extract-json"></pre>
-      </article>
+      <section class="compare hidden" id="compare">
+        <div>
+          <h3 id="before-title">Deterministic</h3>
+          <p class="source" id="before-label"></p>
+          <pre class="json" id="before-json"></pre>
+          <p class="mail-kicker">Email the lead would get</p>
+          <pre class="json" id="before-email"></pre>
+        </div>
+        <div>
+          <h3>Live LLM</h3>
+          <p class="source" id="after-label"></p>
+          <pre class="json" id="after-json"></pre>
+          <p class="mail-kicker">Email the lead would get</p>
+          <pre class="json" id="after-email"></pre>
+        </div>
+      </section>
 
-      <article class="entry" id="gates">
-        <h2>03  Deterministic gates: policy.yaml, zero LLM</h2>
-        <p class="source">Click a gate for how it is implemented and why it exists. First fired gate stops the chain.</p>
+      <article class="entry hidden" id="gates-wrap">
+        <h2>What the policy did</h2>
         <div class="gates" id="gate-list"></div>
         <p class="source" style="margin-top:18px">Rule trace</p>
         <pre class="json" id="trace"></pre>
       </article>
 
-      <article class="entry" id="output">
-        <h2>04  Output JSON and where it goes next</h2>
-        <pre class="json" id="out-json"></pre>
-        <p class="source" style="margin-top:18px">Email the lead actually reads</p>
+      <article class="entry hidden" id="email-wrap">
+        <h2>Email the lead reads</h2>
         <pre class="json" id="email"></pre>
-        <p class="source" style="margin-top:18px">Spreadsheet row (empty correction column)</p>
-        <pre class="json" id="sheet"></pre>
-        <p class="source" style="margin-top:18px">Future paths</p>
-        <div class="paths" id="paths"></div>
       </article>
     </main>
   </div>
   <script>
     const $ = (id) => document.getElementById(id);
+    const RAN_KEY = "intake-journal-live-ran";
+    let mode = "interview";
+    let browse = "call";
+    let cases = [];
+    let currentId = null;
+    let cachedIds = new Set();
+    let hasKey = false;
 
-    async function loadSeeds() {
-      const res = await fetch("/api/seeds");
+    function ranSet() {
+      try { return new Set(JSON.parse(localStorage.getItem(RAN_KEY) || "[]")); }
+      catch { return new Set(); }
+    }
+    function markRan(id) {
+      const s = ranSet();
+      s.add(id);
+      localStorage.setItem(RAN_KEY, JSON.stringify([...s]));
+    }
+    function isRan(id) { return ranSet().has(id); }
+
+    function hasResult(id) {
+      return cachedIds.has(id) || isRan(id);
+    }
+
+    function packForMode() {
+      if (mode === "browse") return browse;
+      if (mode === "test") return "test";
+      return "interview";
+    }
+
+    function runLabel() {
+      const ran = currentId && hasResult(currentId);
+      return ran ? "Rerun compare" : "Compare new";
+    }
+
+    function hideOutputs() {
+      $("compare").classList.add("hidden");
+      $("banner").classList.add("hidden");
+      $("gates-wrap").classList.add("hidden");
+      $("email-wrap").classList.add("hidden");
+      $("live-wrap").classList.add("hidden");
+    }
+
+    function setMode(next) {
+      mode = next;
+      $("browse-row").classList.toggle("hidden", mode !== "browse");
+      document.querySelectorAll("#modes button").forEach(b => b.classList.toggle("on", b.dataset.mode === mode));
+      document.querySelectorAll("#browse-row button").forEach(b => b.classList.toggle("on", b.dataset.browse === browse));
+      $("title").textContent = mode === "interview" ? "Interview" : mode === "test" ? "Test" : "Browse";
+      $("blurb").textContent = mode === "interview"
+        ? "Left is deterministic gold. Right is the live extract. Hard and very-hard cases are in the list."
+        : mode === "test"
+          ? "Left is deterministic gold. Right is the live extract. Long letters and form-empty letters are in this pack."
+          : "Left is deterministic gold. Right is the live extract. Batch of 50 still lives in the terminal.";
+      $("run").textContent = runLabel();
+      hideOutputs();
+      loadCases();
+    }
+
+    function renderLlm(status) {
+      hasKey = !!(status && status.has_llm_key);
+      const box = $("llm-box");
+      box.classList.toggle("ready", hasKey);
+      $("llm-msg").textContent = hasKey
+        ? `Live LLM ready${status.hint ? "  " + status.hint : ""}`
+        : "No API key in this process. Paste one below, or put it in .env and restart.";
+      $("run").disabled = !hasKey;
+      $("run").textContent = runLabel();
+      $("key").classList.toggle("hidden", hasKey);
+      $("save-key").classList.toggle("hidden", hasKey);
+    }
+
+    function matches(row) {
+      const q = $("q").value.trim().toLowerCase();
+      if (!q) return true;
+      return [row.enquiry_id, row.company_name, row.why, row.difficulty].join(" ").toLowerCase().includes(q);
+    }
+
+    function renderList() {
+      const visible = cases.filter(matches);
+      if (!visible.length) {
+        $("cases").innerHTML = `<p class="source">No cases in this view. Clear, or switch pack.</p>`;
+        return;
+      }
+      $("cases").innerHTML = visible.map(s => `
+        <button type="button" class="case ${s.enquiry_id === currentId ? "on" : ""} ${hasResult(s.enquiry_id) ? "seen" : ""}" data-id="${s.enquiry_id}">
+          <span class="id">${s.enquiry_id.slice(-4)}</span>
+          <span class="co">${s.company_name}</span>
+          <span class="why">${s.why}</span>
+        </button>`).join("");
+      $("cases").querySelectorAll(".case").forEach(btn => {
+        btn.addEventListener("click", () => select(btn.dataset.id));
+      });
+    }
+
+    async function loadCases() {
+      const res = await fetch(`/api/cases?pack=${packForMode()}`);
       const data = await res.json();
-      const sel = $("seed");
-      sel.innerHTML = data.seeds.map(s =>
-        `<option value="${s.enquiry_id}">${s.label}</option>`
-      ).join("");
-      $("llm").disabled = !data.has_llm_key;
-      if (!data.has_llm_key) $("llm").parentElement.title = "No ANTHROPIC_API_KEY in this process";
-      sel.value = "HG-2026-0011";
-      await run();
+      cases = data.cases;
+      cachedIds = new Set(data.cached_ids || []);
+      (data.cached_ids || []).forEach(id => markRan(id));
+      renderLlm(data);
+      if (currentId && !cases.some(c => c.enquiry_id === currentId)) currentId = null;
+      renderList();
+      if (!currentId) {
+        $("now").textContent = "Pick a case.";
+        $("intake-text").textContent = "Pick a case on the left. Then run live.";
+        $("intake-meta").innerHTML = "";
+      }
     }
 
-    async function run() {
-      const id = $("seed").value;
-      const llm = $("llm").checked;
-      const res = await fetch(`/api/run/${id}?llm=${llm}`);
+    async function select(id) {
+      currentId = id;
+      const row = cases.find(c => c.enquiry_id === id);
+      $("now").textContent = row ? `${id}  ${row.company_name}` : id;
+      renderList();
+      hideOutputs();
+      $("err").hidden = true;
+      $("run").textContent = runLabel();
+      const res = await fetch(`/api/intake/${id}`);
       const d = await res.json();
-      render(d);
+      const filled = d.form_filled || {};
+      const meta = [["id", d.enquiry_id]];
+      if (filled.company_name) meta.push(["company", filled.company_name]);
+      if (filled.industry) meta.push(["industry", filled.industry]);
+      if (filled.company_size) meta.push(["size", filled.company_size]);
+      if (filled.urgency) meta.push(["urgency", filled.urgency + " (form field)"]);
+      if (filled.contact_name) meta.push(["contact", filled.contact_name]);
+      if (d.form_empty) meta.push(["form", "picklists empty; facts are in the letter"]);
+      $("intake-meta").innerHTML = meta.map(([k,v]) => `<div><span>${k}</span><br>${v}</div>`).join("");
+      $("intake-text").textContent = d.description || "(empty)";
+      if (d.last && d.last.payload) {
+        cachedIds.add(id);
+        markRan(id);
+        $("run").textContent = runLabel();
+        await restoreLast(d.last);
+      }
     }
 
-    function render(d) {
-      const err = $("err");
-      if (d.llm_error) { err.hidden = false; err.textContent = d.llm_error; }
-      else { err.hidden = true; }
+    async function restoreLast(last) {
+      if (!last || !last.payload) return;
+      $("live-wrap").classList.add("hidden");
+      if (last.kind === "compare") {
+        showCompare(last.payload);
+        return;
+      }
+      const res = await fetch(`/api/run/${currentId}`);
+      const before = await res.json();
+      const after = last.payload;
+      const keys = ["abstained", "abstain_reason", "service_line", "complexity", "estimated_hours", "route_to"];
+      const same = keys.every(k => (before.decision || {})[k] === (after.decision || {})[k]);
+      showCompare({ before, after, same_route: same });
+    }
 
-      const banner = $("banner");
+    function showLiveJson(d) {
+      $("live-wrap").classList.remove("hidden");
+      $("live-label").textContent = d.extraction_source || "live";
+      $("live-json").textContent = JSON.stringify({
+        source: d.extraction_source,
+        decision: d.decision,
+        extraction: d.extraction,
+      }, null, 2);
+    }
+
+    function showDecision(d) {
       const routed = !d.decision.abstained;
-      banner.className = "decision " + (routed ? "routed" : "held");
+      $("banner").className = "decision " + (routed ? "routed" : "held");
+      $("banner").classList.remove("hidden");
       $("banner-status").textContent = routed
         ? `${d.decision.complexity} · ${d.decision.estimated_hours}h`
         : `Abstain · ${d.decision.abstain_reason || "held"}`;
       $("banner-meta").innerHTML = `
         <dt>Route</dt><dd>${d.decision.route_name || ""} ${d.decision.route_to || ""}</dd>
-        <dt>Line</dt><dd>${d.decision.service_line || "none committed"}</dd>
-        <dt>Case</dt><dd>${d.hard_case_type || "clean"}</dd>`;
-
-      const i = d.intake;
-      $("intake-meta").innerHTML = [
-        ["id", i.enquiry_id],
-        ["company", i.company_name],
-        ["industry", i.industry],
-        ["size", i.company_size],
-        ["urgency", i.urgency + " (form field, not complexity)"],
-      ].map(([k,v]) => `<div><span>${k}</span><br>${v}</div>`).join("");
-      $("intake-text").textContent = i.description || "(empty)";
-
-      $("extract-source").textContent = d.extraction_source === "live_llm"
-        ? "Source: live model call, then span validation."
-        : "Source: authored driver vector for this seed. Not a live LLM call. Toggle Live LLM if a key is set.";
-      $("extract-json").textContent = JSON.stringify(d.extraction, null, 2);
-
+        <dt>Line</dt><dd>${d.decision.service_line || "none committed"}</dd>`;
       $("gate-list").innerHTML = d.gates.map(g => `
         <details class="gate">
           <summary>
-            <span class="st ${g.status}">${g.status.replace("_", " ")}</span>
             <span>${g.title}</span>
+            <span class="st ${g.status}">${g.status.replace("_", " ")}</span>
           </summary>
           <div class="how"><b>How.</b> ${g.how}<br><b>Why.</b> ${g.why}</div>
         </details>`).join("");
       $("trace").textContent = (d.rule_trace || []).join("\n");
-
-      $("out-json").textContent = JSON.stringify(d.output_json, null, 2);
-      $("email").textContent = d.email;
-      $("sheet").textContent = JSON.stringify(d.sheet_row, null, 2);
-      $("paths").innerHTML = d.future_paths.map(p =>
-        `<div class="path"><b>${p.title}</b><span>${p.detail}</span></div>`
-      ).join("");
+      $("gates-wrap").classList.remove("hidden");
     }
 
+    function brief(d) {
+      const x = d.decision;
+      if (x.abstained) return `Abstain · ${x.abstain_reason}`;
+      return `${x.complexity} · ${x.estimated_hours}h → ${x.route_name || x.route_to}`;
+    }
+
+    function showCompare(d) {
+      const before = d.before || {};
+      const after = d.after || {};
+      $("compare").classList.remove("hidden");
+      $("before-title").textContent = before.record_source === "generated"
+        ? "Deterministic · reverse-generated"
+        : "Deterministic";
+      $("before-label").textContent = brief(before);
+      $("after-label").textContent = after.llm_error
+        ? after.llm_error
+        : (d.same_route ? "Same route as the left column." : brief(after));
+      $("before-json").textContent = JSON.stringify({
+        source: before.extraction_source,
+        decision: before.decision,
+        extraction: before.extraction,
+      }, null, 2);
+      $("after-json").textContent = JSON.stringify({
+        source: after.extraction_source,
+        decision: after.decision,
+        extraction: after.extraction,
+      }, null, 2);
+      $("before-email").textContent = before.email || "";
+      $("after-email").textContent = after.email || "";
+      $("email-wrap").classList.add("hidden");
+      showDecision(after);
+    }
+
+    async function run() {
+      if (!currentId) { $("err").hidden = false; $("err").textContent = "Pick a case first."; return; }
+      if (!hasKey) { $("err").hidden = false; $("err").textContent = "Add an API key first."; return; }
+      $("run").disabled = true;
+      $("err").hidden = true;
+      try {
+        const res = await fetch(`/api/compare/${currentId}`);
+        const d = await res.json();
+        if (d.after && d.after.llm_status) renderLlm(d.after.llm_status);
+        if (d.after && d.after.llm_error) {
+          $("err").hidden = false;
+          $("err").textContent = d.after.llm_error;
+        }
+        showCompare(d);
+        $("live-wrap").classList.add("hidden");
+        markRan(currentId);
+        cachedIds.add(currentId);
+        $("run").textContent = runLabel();
+        renderList();
+      } finally {
+        $("run").disabled = !hasKey;
+      }
+    }
+
+    function nextUnrun() {
+      const leftover = cases.filter(s => !hasResult(s.enquiry_id) && s.enquiry_id !== currentId);
+      if (leftover[0]) select(leftover[0].enquiry_id);
+    }
+
+    function clearFilters() {
+      $("q").value = "";
+      if (mode === "browse") browse = "call";
+      currentId = null;
+      setMode(mode);
+    }
+
+    document.querySelectorAll("#modes button").forEach(b => {
+      b.addEventListener("click", () => { currentId = null; setMode(b.dataset.mode); });
+    });
+    document.querySelectorAll("#browse-row button").forEach(b => {
+      b.addEventListener("click", () => { browse = b.dataset.browse; setMode("browse"); });
+    });
+    $("q").addEventListener("input", renderList);
+    $("clear").addEventListener("click", clearFilters);
+    $("next").addEventListener("click", nextUnrun);
     $("run").addEventListener("click", run);
-    $("seed").addEventListener("change", run);
-    loadSeeds();
+    $("save-key").addEventListener("click", async () => {
+      const key = $("key").value.trim();
+      if (!key) return;
+      const res = await fetch("/api/session-key", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key }),
+      });
+      const status = await res.json();
+      $("key").value = "";
+      renderLlm(status);
+    });
+
+    fetch("/api/status").then(r => r.json()).then(renderLlm);
+    setMode("interview");
   </script>
 </body>
 </html>

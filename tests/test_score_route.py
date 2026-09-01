@@ -1,3 +1,5 @@
+"""Locked seeds through score/route. Cross-lead holds; same-lead overlap routes."""
+
 from __future__ import annotations
 
 from intake_triage.generate import seed_to_enquiry, seed_to_extraction
@@ -68,4 +70,15 @@ def test_cross_lead_does_abstain():
     seed = next(s for s in SEEDS if s["enquiry_id"] == "HG-2026-0011")
     decision = triage_from_extraction(seed_to_enquiry(seed), seed_to_extraction(seed))
     assert decision.abstained is True
+    assert decision.abstain_reason.value == "cross_lead_conflict"
     assert len(decision.competing_lines) == 2
+
+
+def test_cross_lead_wins_over_null_deadline():
+    seed = next(s for s in SEEDS if s["enquiry_id"] == "HG-2026-0011")
+    extraction = seed_to_extraction(seed).model_copy(deep=True)
+    extraction.deadline_kind.value = None
+    extraction.deadline_kind.evidence_span = None
+    decision = triage_from_extraction(seed_to_enquiry(seed), extraction)
+    assert decision.abstained is True
+    assert decision.abstain_reason.value == "cross_lead_conflict"

@@ -1,11 +1,58 @@
+"""Lead email, spreadsheet row, and JSONL line. Form picklists win; empty forms use the letter."""
+
 from __future__ import annotations
 
 import csv
-import json
+import re
 from io import StringIO
 from pathlib import Path
 
-from intake_triage.schema import Enquiry, TriageDecision
+from intake_triage.schema import Enquiry, Extraction, TriageDecision
+
+
+def _enum_or_str(value) -> str | None:
+    if value is None or value == "":
+        return None
+    return value.value if hasattr(value, "value") else str(value)
+
+
+def _stated(extraction: Extraction | None, field: str) -> str | None:
+    if extraction is None:
+        return None
+    driver = getattr(extraction, field, None)
+    if driver is None:
+        return None
+    return _enum_or_str(driver.value)
+
+
+def letter_brief(description: str, *, limit: int = 280) -> str:
+    text = (description or "").strip()
+    if not text:
+        return ""
+    parts = re.split(r"(?<=[.!?])\s+", text)
+    brief = " ".join(parts[:2]).strip()
+    if len(brief) > limit:
+        clipped = brief[: limit - 1].rsplit(" ", 1)
+        brief = (clipped[0] if clipped else brief[:limit]) + "..."
+    return brief
+
+
+def resolve_intake_fields(enquiry: Enquiry, extraction: Extraction | None) -> dict[str, tuple[str | None, str]]:
+    """Form picklist wins. If empty, use stated_* from the letter."""
+    pairs = (
+        ("company", enquiry.company_name, "stated_company"),
+        ("industry", _enum_or_str(enquiry.industry), "stated_industry"),
+        ("size", _enum_or_str(enquiry.company_size), "stated_company_size"),
+        ("urgency", _enum_or_str(enquiry.urgency), "stated_urgency"),
+    )
+    out: dict[str, tuple[str | None, str]] = {}
+    for key, form_val, stated_field in pairs:
+        if form_val:
+            out[key] = (form_val, "form")
+        else:
+            letter_val = _stated(extraction, stated_field)
+            out[key] = (letter_val, "letter") if letter_val else (None, "missing")
+    return out
 
 
 def format_email(enquiry: Enquiry, decision: TriageDecision, policy: dict) -> str:
@@ -35,18 +82,41 @@ def format_email(enquiry: Enquiry, decision: TriageDecision, policy: dict) -> st
             f"Route to: {to_name} ({to_addr})"
         )
 
+    fields = resolve_intake_fields(enquiry, decision.extraction)
+    company, company_src = fields["company"]
+    industry, industry_src = fields["industry"]
+    size, size_src = fields["size"]
+    urgency, urgency_src = fields["urgency"]
+    display_company = company or "(unnamed)"
+    form_empty = all(src != "form" for _, src in fields.values())
+
+    def labelled(title: str, value: str | None, source: str) -> str:
+        if not value:
+            return f"{title}: (not on form; see letter)"
+        if source == "letter":
+            return f"{title}: {value} (from letter)"
+        return f"{title}: {value}"
+
+    original = [
+        labelled("Company", company, company_src),
+        labelled("Industry", industry, industry_src),
+        labelled("Size", size, size_src),
+        labelled("Urgency (form field, not complexity)", urgency, urgency_src),
+    ]
+    if form_empty:
+        brief = letter_brief(enquiry.description)
+        if brief:
+            original.append(f"Brief (from letter): {brief}")
+
     trace = "\n".join(f"- {line}" for line in decision.rule_trace)
     return (
         f"To: {to_addr}\n"
-        f"Subject: Intake {enquiry.enquiry_id} / {enquiry.company_name}\n\n"
+        f"Subject: Intake {enquiry.enquiry_id} / {display_company}\n\n"
         f"{decision_block}\n\n"
         f"Rule trace:\n{trace}\n\n"
         f"Original enquiry\n"
-        f"Company: {enquiry.company_name}\n"
-        f"Industry: {enquiry.industry.value}\n"
-        f"Size: {enquiry.company_size.value}\n"
-        f"Urgency (form field, not complexity): {enquiry.urgency.value}\n\n"
-        f"{enquiry.description}\n"
+        + "\n".join(original)
+        + f"\n\n{enquiry.description}\n"
     )
 
 
@@ -70,13 +140,14 @@ SHEET_COLUMNS = [
 
 
 def sheet_row(enquiry: Enquiry, decision: TriageDecision) -> dict:
+    fields = resolve_intake_fields(enquiry, decision.extraction)
     return {
         "enquiry_id": enquiry.enquiry_id,
         "submitted_at": enquiry.submitted_at.isoformat(),
-        "company_name": enquiry.company_name,
-        "industry": enquiry.industry.value,
-        "company_size": enquiry.company_size.value,
-        "urgency": enquiry.urgency.value,
+        "company_name": fields["company"][0] or "",
+        "industry": fields["industry"][0] or "",
+        "company_size": fields["size"][0] or "",
+        "urgency": fields["urgency"][0] or "",
         "service_line": decision.service_line.value if decision.service_line else "",
         "complexity": decision.complexity.value if decision.complexity else "",
         "estimated_hours": decision.estimated_hours if decision.estimated_hours is not None else "",

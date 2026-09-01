@@ -8,6 +8,8 @@ Given: 40-60 enquiries/week, 8 analyst hours/week. Derived: midpoint (40+60)/2 =
 
 **Where does the form post today?** If it lands in a CRM or a mailbox rule, we emit there. If it lands in an unowned inbox, email plus a ledger is the conservative path. This is the single answer that most changes what gets written.
 
+**Does the week arrive as one dump or as 50 separate pings?** Forty to sixty a week is a spreadsheet export, not a job queue. If they already get a morning CSV or a Typeform results sheet, the CLI batch path is the production adapter. If each submission emails intake@ live, the same extract-score-route path runs per webhook and the batch command is how we replay a day.
+
 **What platform is the form, and can fields be added?** Optional picklists cut nulls at zero cost. Required fields cut conversions, and one lost professional-services enquiry can be worth more than a year of this system.
 
 **What does the team lead actually open after routing?** That is the only output surface that matters. We will not invent a queue nobody logs into.
@@ -38,7 +40,7 @@ Full A1-A15 register in [AGENTS.md](AGENTS.md). The four that would change code:
 
 | Assumption | Why | What breaks if wrong | Verified by |
 |---|---|---|---|
-| Industry, size, urgency are picklists, not free text | Brief says enquiries "include" them, not how | Extraction must recover them from prose; null rate rises and abstention rises with it | Open the live form |
+| Industry, size, urgency may be picklists, and they may be empty | Brief says enquiries "include" them, not that they are required | Empty form is already handled via `stated_*` from the letter. If the letter also omits them, nulls rise and abstention rises with them | Open the live form |
 | Email plus spreadsheet plus JSONL, no UI | Brief allows notebook, app, or orchestration | If a CRM exists we emit there instead | Ask what the lead opens |
 | Five service lines, four leads, one lead owning two lines | Brief requires tagging by service line and lists none | Collision and abstain rules change; the two-layer design does not | Ask who owns the taxonomy |
 | No labelled history exists | Brief requires synthetic data | Gold set becomes real mail in week one and the synthetics are discarded | Ask for the archive |

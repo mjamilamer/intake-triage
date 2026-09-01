@@ -10,11 +10,11 @@ It proves internal consistency and nothing else: I wrote the expected hours by h
 
 ### 2. You never ran the model. How do you know extraction works? **WEAKNESS**
 
-I do not, and section 1 of EVAL_RESULTS.md says "not measured" rather than a number I could not stand behind. The 20 preview records carry authored driver vectors so I could test the deterministic layer in isolation, which means everything I have measured is the half of the system that does not involve an LLM.
+I have run live extract in the journal. EVAL_RESULTS still says not measured because that file is a scored gold set, and I do not have one. The 20 preview records carry authored driver vectors so I could test the deterministic layer in isolation. Live extract is how I show the two-layer split. It is not a number I would quote to a partner.
 
 ### 3. Twenty seeds. Your own plan said 150. **WEAKNESS**
 
-There are 20 and I built them by reverse-specifying from expected outputs, so they are dense in hard cases and useless as a distribution estimate. Twenty hand-specified boundary cases was the right first spend given the deterministic layer was what needed pinning down, but I would not defend 20 as an evaluation set and the 150 is still owed.
+There are now 150 reverse-generated rows in `data/enquiries_150.csv`, with 50 held out in `data/call_batch.csv` as a 15/20/15 easy/medium/hard mix, and I can run any one of them with `python -m intake_triage run --id HG-2026-0011`. The weakness that remains is that those labels still come from `score.py`, so this is a larger consistency set, not an independent eval, and I would not quote live accuracy from it.
 
 ### 4. You have never seen the actual intake form. **WEAKNESS**
 

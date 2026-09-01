@@ -1,3 +1,5 @@
+"""Turn a seed dict into Enquiry / Extraction. Also writes data/preview.jsonl."""
+
 from __future__ import annotations
 
 import json
@@ -10,21 +12,31 @@ from intake_triage.seeds import SEEDS
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
+def _blank(value):
+    if value is None:
+        return None
+    if isinstance(value, str) and not value.strip():
+        return None
+    return value
+
+
 def seed_to_enquiry(seed: dict) -> Enquiry:
+    """Build an Enquiry. Blank company/industry/size/urgency become null."""
     return Enquiry(
         enquiry_id=seed["enquiry_id"],
         submitted_at=datetime.fromisoformat(seed["submitted_at"].replace("Z", "+00:00")),
-        contact_name=seed.get("contact_name"),
-        contact_email=seed.get("contact_email"),
-        company_name=seed["company_name"],
-        industry=seed["industry"],
-        company_size=seed["company_size"],
-        urgency=seed["urgency"],
+        contact_name=_blank(seed.get("contact_name")),
+        contact_email=_blank(seed.get("contact_email")),
+        company_name=_blank(seed.get("company_name")),
+        industry=_blank(seed.get("industry")),
+        company_size=_blank(seed.get("company_size")),
+        urgency=_blank(seed.get("urgency")),
         description=seed["description"],
     )
 
 
 def seed_to_extraction(seed: dict) -> Extraction:
+    """Authored gold drivers. Used offline. Live extract never copies this JSON."""
     return Extraction.model_validate(seed["extraction"])
 
 
